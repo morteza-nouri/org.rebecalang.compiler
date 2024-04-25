@@ -3,7 +3,7 @@ lexer grammar TimedRebecaLexer;
 //import CoreRebecaLexer;
 
 MAILBOX
-    : 'Mailbox'
+    : 'mailbox'
     ;
 
 KNONWSENDERS
@@ -21,3 +21,22 @@ DEADLINE
 	:	'deadline'
 	;
 
+ARRIVALTIME
+    : 'arriavalTime'
+    ;
+
+EXECUTIONTIME
+    : 'executionTime'
+    ;
+
+DELAY
+    : 'delay'
+    ;
+
+MIN
+    : 'min'
+    ;
+
+MAX
+    : 'max'
+    ;
