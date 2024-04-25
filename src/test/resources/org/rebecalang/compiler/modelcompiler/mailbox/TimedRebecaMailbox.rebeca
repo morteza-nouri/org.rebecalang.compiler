@@ -1,9 +1,11 @@
 mailbox BMailbox {
     knownsenders {
         A a;
+        A aa;
     }
     orders {
-        sender == a
+        sender == a,
+        sender == b
     }
 }
 
