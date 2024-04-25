@@ -1,6 +1,25 @@
 parser grammar TimedRebecaParser;
 
-//import CoreRebecaParser;
+import CoreRebecaParser;
+
+mailboxDeclaration returns [MailboxDeclaration mbd]
+    :
+        {$mbd = new MailboxDeclaration();}
+        MAILBOX mailboxName = IDENTIFIER
+        	{	$mbd.setName($mailboxName.text);
+        		$mbd.setLineNumber($mailboxName.getLine()); $mbd.setCharacter($mailboxName.getCharPositionInLine());
+        	}
+        (KNOWNSENDERS
+        LBRACE
+            (fd = fieldDeclaration {$mbd.getKnownSenders().add($fd.fd);} SEMI)*
+        RBRACE)?
+
+        (ORDERS
+        LBRACE
+
+        RBRACE)?
+        RBRACE {$mbd.setEndLineNumber($RBRACE.getLine());$mbd.setEndCharacter($RBRACE.getCharPositionInLine());}
+    ;
 
 primary returns [TermPrimary tp]
     :   
