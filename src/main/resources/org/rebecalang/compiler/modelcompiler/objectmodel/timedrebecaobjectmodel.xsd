@@ -1,7 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	elementFormDefault="qualified" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+           elementFormDefault="qualified" targetNamespace="http://rebecalang.org/compiler/modelcompiler/timedrebeca"
+           xmlns:corerebeca="http://rebecalang.org/compiler/modelcompiler/corerebeca"
+           xmlns="http://rebecalang.org/compiler/modelcompiler/timedrebeca">
 
-	<xs:import namespace="http://rebecalang.org/compiler/modelcompiler/timedrebecaexpression"
-		schemaLocation="timedrebecaexpressionobjectmodel.xsd"/>
+    <xs:import namespace="http://rebecalang.org/compiler/modelcompiler/corerebeca"
+               schemaLocation="corerebecaobjectmodel.xsd" />
+    <xs:import namespace="http://rebecalang.org/compiler/modelcompiler/timedrebecaexpression"
+               schemaLocation="timedrebecaexpressionobjectmodel.xsd"/>
+
+    <xs:complexType name="MailboxDeclaration">
+        <xs:sequence>
+            <xs:element name="knownSenders" type="corerebeca:FieldDeclaration"
+                        maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="lineNumber" type="xs:int"/>
+        <xs:attribute name="character" type="xs:int"/>
+        <xs:attribute name="endLineNumber" type="xs:int"/>
+        <xs:attribute name="endCharacter" type="xs:int"/>
+    </xs:complexType>
 
 </xs:schema>
