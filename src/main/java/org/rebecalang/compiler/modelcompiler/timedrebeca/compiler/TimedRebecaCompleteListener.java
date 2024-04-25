@@ -15,6 +15,36 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface TimedRebecaCompleteListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#rebecaCode}.
+	 * @param ctx the parse tree
+	 */
+	void enterRebecaCode(TimedRebecaCompleteParser.RebecaCodeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TimedRebecaCompleteParser#rebecaCode}.
+	 * @param ctx the parse tree
+	 */
+	void exitRebecaCode(TimedRebecaCompleteParser.RebecaCodeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#mailboxDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterMailboxDeclaration(TimedRebecaCompleteParser.MailboxDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TimedRebecaCompleteParser#mailboxDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitMailboxDeclaration(TimedRebecaCompleteParser.MailboxDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#orderSpecifications}.
+	 * @param ctx the parse tree
+	 */
+	void enterOrderSpecifications(TimedRebecaCompleteParser.OrderSpecificationsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TimedRebecaCompleteParser#orderSpecifications}.
+	 * @param ctx the parse tree
+	 */
+	void exitOrderSpecifications(TimedRebecaCompleteParser.OrderSpecificationsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#primary}.
 	 * @param ctx the parse tree
 	 */
@@ -54,16 +84,6 @@ public interface TimedRebecaCompleteListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitImportDeclaration(TimedRebecaCompleteParser.ImportDeclarationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#rebecaCode}.
-	 * @param ctx the parse tree
-	 */
-	void enterRebecaCode(TimedRebecaCompleteParser.RebecaCodeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link TimedRebecaCompleteParser#rebecaCode}.
-	 * @param ctx the parse tree
-	 */
-	void exitRebecaCode(TimedRebecaCompleteParser.RebecaCodeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#recordDeclaration}.
 	 * @param ctx the parse tree

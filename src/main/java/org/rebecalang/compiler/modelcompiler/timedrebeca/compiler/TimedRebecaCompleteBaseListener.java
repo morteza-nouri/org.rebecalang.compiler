@@ -23,6 +23,42 @@ public class TimedRebecaCompleteBaseListener implements TimedRebecaCompleteListe
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterRebecaCode(TimedRebecaCompleteParser.RebecaCodeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRebecaCode(TimedRebecaCompleteParser.RebecaCodeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMailboxDeclaration(TimedRebecaCompleteParser.MailboxDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMailboxDeclaration(TimedRebecaCompleteParser.MailboxDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOrderSpecifications(TimedRebecaCompleteParser.OrderSpecificationsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOrderSpecifications(TimedRebecaCompleteParser.OrderSpecificationsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPrimary(TimedRebecaCompleteParser.PrimaryContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -66,18 +102,6 @@ public class TimedRebecaCompleteBaseListener implements TimedRebecaCompleteListe
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitImportDeclaration(TimedRebecaCompleteParser.ImportDeclarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterRebecaCode(TimedRebecaCompleteParser.RebecaCodeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitRebecaCode(TimedRebecaCompleteParser.RebecaCodeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
