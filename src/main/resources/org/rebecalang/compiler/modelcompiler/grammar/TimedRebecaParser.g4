@@ -58,8 +58,8 @@ mailboxDeclaration returns [MailboxDeclaration mbd]
 orderSpecifications returns [List<Expression> orders]
     :
         {$orders = new LinkedList<Expression>();}
-        order = conditionalExpression {$orders.add($order.order);}
-        (COMMA order = conditionalExpression {$orders.add($order.order);})*
+        e = conditionalExpression {$orders.add($e.e);}
+        (COMMA e = conditionalExpression {$orders.add($e.e);})*
     ;
 
 primary returns [TermPrimary tp]
