@@ -13,6 +13,7 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlType;
+import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.Expression;
 import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.FieldDeclaration;
 
 
@@ -27,6 +28,7 @@ import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.FieldDeclara
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       <sequence>
  *         <element name="knownSenders" type="{http://rebecalang.org/compiler/modelcompiler/corerebeca}FieldDeclaration" maxOccurs="unbounded" minOccurs="0"/>
+ *         <element name="orders" type="{http://rebecalang.org/compiler/modelcompiler/corerebecaexpression}Expression" maxOccurs="unbounded" minOccurs="0"/>
  *       </sequence>
  *       <attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       <attribute name="lineNumber" type="{http://www.w3.org/2001/XMLSchema}int" />
@@ -42,11 +44,13 @@ import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.FieldDeclara
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MailboxDeclaration", propOrder = {
-    "knownSenders"
+    "knownSenders",
+    "orders"
 })
 public class MailboxDeclaration {
 
     protected List<FieldDeclaration> knownSenders;
+    protected List<Expression> orders;
     @XmlAttribute(name = "name")
     protected String name;
     @XmlAttribute(name = "lineNumber")
@@ -87,6 +91,37 @@ public class MailboxDeclaration {
             knownSenders = new ArrayList<>();
         }
         return this.knownSenders;
+    }
+
+    /**
+     * Gets the value of the orders property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the Jakarta XML Binding object.
+     * This is why there is not a {@code set} method for the orders property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getOrders().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link Expression }
+     * 
+     * 
+     * @return
+     *     The value of the orders property.
+     */
+    public List<Expression> getOrders() {
+        if (orders == null) {
+            orders = new ArrayList<>();
+        }
+        return this.orders;
     }
 
     /**
