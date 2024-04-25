@@ -2,6 +2,38 @@ parser grammar TimedRebecaParser;
 
 import CoreRebecaParser;
 
+rebecaCode returns [TimedRebecaCode rc]
+    :
+        {$rc = new TimedRebecaCode();}
+		(rd = recordDeclaration {$rc.getRecordDeclaration().add($rd.rd);})*
+		(
+			(ENV fd = fieldDeclaration SEMI {$rc.getEnvironmentVariables().add($fd.fd);})
+			|
+			(FEATUREVAR featureName = IDENTIFIER SEMI
+				{
+				VariableDeclarator vd = new VariableDeclarator();
+				vd.setVariableName($featureName.text);
+				vd.setLineNumber($featureName.getLine());
+				vd.setCharacter($featureName.getCharPositionInLine());
+				FieldDeclaration fd = new FieldDeclaration();
+				fd.getVariableDeclarators().add(vd);
+				fd.setType(CoreRebecaTypeSystem.BOOLEAN_TYPE);
+    			fd.setCharacter($featureName.getCharPositionInLine());
+				fd.setLineNumber($featureName.getLine());
+				$rc.getFeatureVariables().add(fd);
+				}
+			)
+		)*
+        (
+            mbd = mailboxDeclaration {$rc.getMailboxDeclaration().add($mbd.mbd);}
+            |
+        	rcd = reactiveClassDeclaration {$rc.getReactiveClassDeclaration().add($rcd.rcd);}
+        	|
+        	intd = interfaceDeclaration {$rc.getInterfaceDeclaration().add($intd.intd);}
+    	)+
+        md = mainDeclaration  {$rc.setMainDeclaration($md.md);}
+    ;
+
 mailboxDeclaration returns [MailboxDeclaration mbd]
     :
         {$mbd = new MailboxDeclaration();}
@@ -9,16 +41,25 @@ mailboxDeclaration returns [MailboxDeclaration mbd]
         	{	$mbd.setName($mailboxName.text);
         		$mbd.setLineNumber($mailboxName.getLine()); $mbd.setCharacter($mailboxName.getCharPositionInLine());
         	}
-        (KNOWNSENDERS
+        LBRACE
+
+        (KNONWSENDERS
         LBRACE
             (fd = fieldDeclaration {$mbd.getKnownSenders().add($fd.fd);} SEMI)*
         RBRACE)?
 
         (ORDERS
         LBRACE
-
+            (orders = orderSpecifications {$mbd.getOrders().addAll($orders.orders);})*
         RBRACE)?
         RBRACE {$mbd.setEndLineNumber($RBRACE.getLine());$mbd.setEndCharacter($RBRACE.getCharPositionInLine());}
+    ;
+
+orderSpecifications returns [List<Expression> orders]
+    :
+        {$orders = new LinkedList<Expression>();}
+        order = conditionalExpression {$orders.add($order.order);}
+        (COMMA order = conditionalExpression {$orders.add($order.order);})*
     ;
 
 primary returns [TermPrimary tp]

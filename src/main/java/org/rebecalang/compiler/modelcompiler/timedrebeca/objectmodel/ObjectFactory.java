@@ -36,6 +36,16 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link TimedRebecaCode }
+     * 
+     * @return
+     *     the new instance of {@link TimedRebecaCode }
+     */
+    public TimedRebecaCode createTimedRebecaCode() {
+        return new TimedRebecaCode();
+    }
+
+    /**
      * Create an instance of {@link MailboxDeclaration }
      * 
      * @return
