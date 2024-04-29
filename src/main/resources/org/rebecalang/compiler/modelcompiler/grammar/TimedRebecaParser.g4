@@ -25,13 +25,13 @@ rebecaCode returns [TimedRebecaCode rc]
 			)
 		)*
         (
-            mbd = mailboxDeclaration {$rc.getMailboxDeclaration().add($mbd.mbd);}
+            mbd = mailboxDeclaration {$rc.getMaillboxDeclaration().add($mbd.mbd);}
             |
         	rcd = reactiveClassDeclaration {$rc.getReactiveClassDeclaration().add($rcd.rcd);}
         	|
         	intd = interfaceDeclaration {$rc.getInterfaceDeclaration().add($intd.intd);}
     	)+
-        md = mainDeclaration  {$rc.setMainDeclaration($md.md);}
+        md = timedMainDeclaration  {$rc.setMainDeclaration($md.md);}
     ;
 
 mailboxDeclaration returns [MailboxDeclaration mbd]
@@ -54,6 +54,28 @@ mailboxDeclaration returns [MailboxDeclaration mbd]
         RBRACE)?
         RBRACE {$mbd.setEndLineNumber($RBRACE.getLine());$mbd.setEndCharacter($RBRACE.getCharPositionInLine());}
     ;
+
+timedMainDeclaration returns [MainDeclaration md]
+	:
+		{$md = new MainDeclaration();}
+		MAIN {$md.setLineNumber($MAIN.getLine());$md.setCharacter($MAIN.getCharPositionInLine());}
+		LBRACE
+		(mrd = timedMainRebecDefinition{$md.getMainRebecDefinition().add($mrd.mrd);})*
+		RBRACE {$md.setEndLineNumber($RBRACE.getLine());$md.setEndCharacter($RBRACE.getCharPositionInLine());}
+	;
+
+timedMainRebecDefinition returns [TimedMainRebecDefinition mrd]
+	:
+		{$mrd = new TimedMainRebecDefinition();}
+    	(an = annotation {$mrd.getAnnotations().add($an.an);})*
+		t = type rebecName = IDENTIFIER {$mrd.setType($t.t);$mrd.setName($rebecName.text);
+			$mrd.setLineNumber($rebecName.getLine()); $mrd.setCharacter($rebecName.getCharPositionInLine());}
+		(LT e = expression {$mrd.setMailbox($e.e);} GT)?
+		LPAREN (el = expressionList {$mrd.getBindings().addAll($el.el);})? RPAREN
+		COLON
+		LPAREN (el = expressionList {$mrd.getArguments().addAll($el.el);})? RPAREN
+		SEMI
+	;
 
 orderSpecifications returns [List<Expression> orders]
     :
