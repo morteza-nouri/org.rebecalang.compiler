@@ -37,4 +37,16 @@ public class MailboxTest {
         Assertions.assertTrue(exceptionContainer.exceptionsIsEmpty());
 
     }
+
+    @Test
+    public void GIVEN_DuplicateMailboxes_WHEN_Compiling_Then_1Error() {
+        File model = new File(MODEL_FILES_BASE + "TimedRebecaWithDuplicateMailboxes.rebeca");
+        Set<CompilerExtension> extension = new HashSet<CompilerExtension>();
+        extension.add(CompilerExtension.TIMED_REBECA);
+
+        compiler.compileRebecaFile(model, extension, CoreVersion.CORE_2_1);
+
+        exceptionContainer.print(System.out);
+        Assertions.assertEquals(exceptionContainer.getExceptions().size(), 1);
+    }
 }
