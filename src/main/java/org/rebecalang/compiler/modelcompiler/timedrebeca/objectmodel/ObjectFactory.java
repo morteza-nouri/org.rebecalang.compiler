@@ -46,6 +46,16 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link TimedMainRebecDefinition }
+     * 
+     * @return
+     *     the new instance of {@link TimedMainRebecDefinition }
+     */
+    public TimedMainRebecDefinition createTimedMainRebecDefinition() {
+        return new TimedMainRebecDefinition();
+    }
+
+    /**
      * Create an instance of {@link MailboxDeclaration }
      * 
      * @return

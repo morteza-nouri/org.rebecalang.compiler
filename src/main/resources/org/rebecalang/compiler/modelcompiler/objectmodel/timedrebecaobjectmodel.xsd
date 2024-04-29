@@ -22,6 +22,16 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:complexType name="TimedMainRebecDefinition">
+        <xs:complexContent>
+            <xs:extension base="corerebeca:MainRebecDefinition">
+                <xs:sequence>
+                    <xs:element name="mailbox" type="corerebecaexp:Expression" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:complexType name="MailboxDeclaration">
         <xs:sequence>
             <xs:element name="knownSenders" type="corerebeca:FieldDeclaration"
