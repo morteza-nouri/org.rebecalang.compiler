@@ -8,6 +8,7 @@ import org.rebecalang.compiler.modelcompiler.hybridrebeca.HybridRebecaTypeSystem
 import org.rebecalang.compiler.modelcompiler.hybridrebeca.HybridRebecaTypeSystemInitializer;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.TimedRebecaSymbolTableInitializer;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.TimedRebecaTypeSystem;
+import org.rebecalang.compiler.modelcompiler.timedrebeca.TimedRebecaTypeSystemInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.BeanFactoryAnnotationUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -89,9 +90,9 @@ public class CompilerConfig {
     @Bean
     @Qualifier("TIMED_REBECA")
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public TypeSystemInitializer getTimedRebecaTypeSystemInitializer() {
-        TypeSystemInitializer typeSystemInitializer =
-                new TypeSystemInitializer(appContext.getBean(TimedRebecaTypeSystem.class));
+    public TimedRebecaTypeSystemInitializer getTimedRebecaTypeSystemInitializer() {
+        TimedRebecaTypeSystemInitializer typeSystemInitializer =
+                new TimedRebecaTypeSystemInitializer(appContext.getBean(TimedRebecaTypeSystem.class));
         return typeSystemInitializer;
     }
 
