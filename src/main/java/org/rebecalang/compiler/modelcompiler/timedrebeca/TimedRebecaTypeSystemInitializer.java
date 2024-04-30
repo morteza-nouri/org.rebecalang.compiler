@@ -17,10 +17,10 @@ public class TimedRebecaTypeSystemInitializer extends TypeSystemInitializer {
 
     protected void fillTypeSystem(RebecaModel rebecaModel) {
         super.fillTypeSystem(rebecaModel);
-        addMailboxClassesToTypeSystem((TimedRebecaCode) rebecaModel.getRebecaCode());
+        addMailboxDeclarationsToTypeSystem((TimedRebecaCode) rebecaModel.getRebecaCode());
     }
 
-    private void addMailboxClassesToTypeSystem(TimedRebecaCode rebecaCode) {
+    private void addMailboxDeclarationsToTypeSystem(TimedRebecaCode rebecaCode) {
         for (MailboxDeclaration mailboxDeclaration : rebecaCode.getMailboxDeclaration()) {
             if (typeSystem.hasType(mailboxDeclaration.getName())) {
                 CodeCompilationException rce = new CodeCompilationException(

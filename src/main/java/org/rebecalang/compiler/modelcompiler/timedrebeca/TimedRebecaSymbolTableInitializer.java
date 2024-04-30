@@ -1,5 +1,6 @@
 package org.rebecalang.compiler.modelcompiler.timedrebeca;
 
+import java.util.Objects;
 import org.rebecalang.compiler.modelcompiler.abstractrebeca.AbstractTypeSystem;
 import org.rebecalang.compiler.modelcompiler.abstractrebeca.SymbolTableInitializer;
 import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.RebecaModel;
@@ -17,27 +18,32 @@ public class TimedRebecaSymbolTableInitializer extends SymbolTableInitializer {
 
     public void fillSymbolTable(RebecaModel rebecaModel, CoreVersion coreVersion) {
         super.fillSymbolTable(rebecaModel, coreVersion);
-        addMailboxClassToSymbolTableInInitialization((TimedRebecaCode) rebecaModel.getRebecaCode());
+        addMailboxDeclarationsToSymbolTableInInitialization((TimedRebecaCode) rebecaModel.getRebecaCode());
     }
 
-    protected void addMailboxClassToSymbolTableInInitialization(TimedRebecaCode rebecaCode) {
+    protected void addMailboxDeclarationsToSymbolTableInInitialization(TimedRebecaCode rebecaCode) {
         for (MailboxDeclaration mailboxDeclaration : rebecaCode.getMailboxDeclaration()) {
-            if (typeSystem.hasType(mailboxDeclaration.getName())) {
-                CodeCompilationException rce = new CodeCompilationException(
-                        "Multiple definition of "
-                                + mailboxDeclaration.getName(),
-                        mailboxDeclaration.getLineNumber(),
-                        mailboxDeclaration.getCharacter());
-                exceptionContainer.addException(rce);
-            } else {
-                ((TimedRebecaTypeSystem)typeSystem).addMailboxClassType(mailboxDeclaration);
-            }
+            checkMailboxDeclarationIsNotEmpty(mailboxDeclaration);
+            //TODO: Make sure that no orders defined on unknown senders
             try {
                 Type type = typeSystem.getType(mailboxDeclaration.getName());
                 addFields(type, mailboxDeclaration.getKnownSenders(), AccessModifierUtilities.PRIVATE);
+                //TODO: Do we need to add each order specification to symbolTable ?
             } catch (CodeCompilationException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void checkMailboxDeclarationIsNotEmpty(MailboxDeclaration mailboxDeclaration) {
+        if (mailboxDeclaration.getOrders().isEmpty() || Objects.isNull(mailboxDeclaration.getOrders())) {
+            CodeCompilationException rce = new CodeCompilationException(
+                "Mailbox " + mailboxDeclaration.getName() + " should not be declared without any order specifications",
+                mailboxDeclaration.getLineNumber(),
+                mailboxDeclaration.getCharacter());
+            //TODO: Exceptions are unique based on line&column, So if an error occurred in the same line and column in
+            // the TypeSystem, then this error doesn't enter in the container
+            exceptionContainer.addException(rce);
         }
     }
 }
