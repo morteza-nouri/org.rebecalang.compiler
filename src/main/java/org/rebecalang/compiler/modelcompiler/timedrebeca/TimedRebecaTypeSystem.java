@@ -22,7 +22,7 @@ public class TimedRebecaTypeSystem extends CoreRebecaTypeSystem {
     @Getter
     public final static OrdinaryPrimitiveType MAILBOX_TYPE;
 
-    protected Map<Type, MailboxDeclaration> mailboxClassesMetaData;
+    protected Map<Type, MailboxDeclaration> mailboxDeclarationsMetaData;
 
     static {
         TIMER_TYPE = new OrdinaryPrimitiveType();
@@ -35,7 +35,7 @@ public class TimedRebecaTypeSystem extends CoreRebecaTypeSystem {
     protected void initializeTypeSystem() {
         super.initializeTypeSystem();
 
-        mailboxClassesMetaData = new HashMap<>();
+        mailboxDeclarationsMetaData = new HashMap<>();
 
         addNewType(TIMER_TYPE);
         addNewType(MAILBOX_TYPE);
@@ -47,7 +47,7 @@ public class TimedRebecaTypeSystem extends CoreRebecaTypeSystem {
         type.setLineNumber(mbd.getLineNumber());
         type.setCharacter(mbd.getCharacter());
         addNewType(type);
-        mailboxClassesMetaData.put(type, mbd);
+        mailboxDeclarationsMetaData.put(type, mbd);
         try {
             addTypeCompatibility(getType(mbd.getName()), MAILBOX_TYPE);
         } catch (CodeCompilationException e) {
