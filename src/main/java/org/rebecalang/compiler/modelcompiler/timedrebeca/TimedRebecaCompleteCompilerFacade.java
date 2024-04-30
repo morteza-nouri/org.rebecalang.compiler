@@ -20,6 +20,8 @@ import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.TermPrimary;
 import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.Type;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.compiler.TimedRebecaCompleteLexer;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.compiler.TimedRebecaCompleteParser;
+import org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel.MailboxDeclaration;
+import org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel.TimedRebecaCode;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.statementsemanticchecker.expression.TimedPrimaryTermSemanticCheck;
 import org.rebecalang.compiler.utils.CodeCompilationException;
 import org.rebecalang.compiler.utils.Pair;
@@ -55,6 +57,7 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 	public void semanticCheck() {
 		this.modelPriorityType = null;
 		super.semanticCheck();
+		semanticCheckRebecaModel();
 	}
 	@Override
 	protected void initializeExpressionSemanticCheckContainer() {
@@ -134,8 +137,28 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		return new TimedRebecaCompleteParser(tokens);
 	}
 	
-	
-	
+	protected void semanticCheckRebecaModel() {
+		scopeHandler.pushScopeRecord(CoreRebecaLabelUtility.REBECA_MODEL);
+
+		addEnvironmentVariablesToScope();
+
+		semanticCheckMailboxDeclarations();
+
+		semanticCheckReactiveClassDeclarations();
+
+		semanticCheckMainBindings(rebecaModel);
+
+		scopeHandler.popScopeRecord();
+	}
+
+	protected void semanticCheckMailboxDeclarations() {
+		for (MailboxDeclaration mailboxDeclaration : ((TimedRebecaCode)rebecaModel.getRebecaCode()).getMailboxDeclaration()) {
+			scopeHandler.pushScopeRecord(TimedRebecaLabelUtility.MAILBOX);
+			//TODO: KnownSenders are valid? ...
+			scopeHandler.popScopeRecord();
+		}
+	}
+
 	protected void checkPriorityAnnotations(List<Annotation> annotations) {
 		for (Annotation annotation : annotations) {
 			if (annotation.getIdentifier().equals(PRIORITY_LABEL) || annotation.getIdentifier().equals(GLOBAL_PRIORITY_LABEL)) {
@@ -201,4 +224,5 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		}
 		return true;
 	}
+
 }

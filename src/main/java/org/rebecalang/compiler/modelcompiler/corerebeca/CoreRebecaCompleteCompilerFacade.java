@@ -254,13 +254,15 @@ public class CoreRebecaCompleteCompilerFacade extends AbstractCompilerFacade {
 
 	@Override
 	public void semanticCheck() {
-
 		super.semanticCheck();
+		semanticCheckRebecaModel();
+	}
 
+	protected void semanticCheckRebecaModel() {
 		scopeHandler.pushScopeRecord(CoreRebecaLabelUtility.REBECA_MODEL);
 
 		addEnvironmentVariablesToScope();
-		
+
 		semanticCheckReactiveClassDeclarations();
 
 		semanticCheckMainBindings(rebecaModel);
@@ -476,7 +478,7 @@ public class CoreRebecaCompleteCompilerFacade extends AbstractCompilerFacade {
 	}
 
 
-	private void semanticCheckMainBindings(RebecaModel rebecaModel) {
+	protected void semanticCheckMainBindings(RebecaModel rebecaModel) {
 
 		// Initializing the scope stack by the defined actors and check for repeated
 		// actors
