@@ -38,7 +38,7 @@ reactiveclass B (3) {
 }
 
 main {
-    BMailbox bmailbox(a,);
+    BMailbox bmailbox(a);
 	A a(b):();
 	B b<bmailbox>():();
 }

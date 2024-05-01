@@ -45,6 +45,16 @@ public interface TimedRebecaCompleteListener extends ParseTreeListener {
 	 */
 	void exitTimedMainDeclaration(TimedRebecaCompleteParser.TimedMainDeclarationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#mainMailboxDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterMainMailboxDefinition(TimedRebecaCompleteParser.MainMailboxDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TimedRebecaCompleteParser#mainMailboxDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitMainMailboxDefinition(TimedRebecaCompleteParser.MainMailboxDefinitionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#timedMainRebecDefinition}.
 	 * @param ctx the parse tree
 	 */

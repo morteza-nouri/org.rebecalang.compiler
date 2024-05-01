@@ -25,7 +25,7 @@ rebecaCode returns [TimedRebecaCode rc]
 			)
 		)*
         (
-            mbd = mailboxDeclaration {$rc.getMaillboxDeclaration().add($mbd.mbd);}
+            mbd = mailboxDeclaration {$rc.getMailboxDeclaration().add($mbd.mbd);}
             |
         	rcd = reactiveClassDeclaration {$rc.getReactiveClassDeclaration().add($rcd.rcd);}
         	|
@@ -55,14 +55,24 @@ mailboxDeclaration returns [MailboxDeclaration mbd]
         RBRACE {$mbd.setEndLineNumber($RBRACE.getLine());$mbd.setEndCharacter($RBRACE.getCharPositionInLine());}
     ;
 
-timedMainDeclaration returns [MainDeclaration md]
+timedMainDeclaration returns [TimedMainDeclaration md]
 	:
-		{$md = new MainDeclaration();}
+		{$md = new TimedMainDeclaration();}
 		MAIN {$md.setLineNumber($MAIN.getLine());$md.setCharacter($MAIN.getCharPositionInLine());}
 		LBRACE
-		(mrd = timedMainRebecDefinition{$md.getMainRebecDefinition().add($mrd.mrd);})*
+		(mmbd = mainMailboxDefinition {$md.getMainMailboxDefinition().add($mmbd.mmbd);})*
+		(mrd = timedMainRebecDefinition {$md.getMainRebecDefinition().add($mrd.mrd);})*
 		RBRACE {$md.setEndLineNumber($RBRACE.getLine());$md.setEndCharacter($RBRACE.getCharPositionInLine());}
 	;
+
+mainMailboxDefinition returns [MainMailboxDefinition mmbd]
+    :
+        {$mmbd = new MainMailboxDefinition();}
+        t = type mailboxName = IDENTIFIER {$mmbd.setType($t.t);$mmbd.setName($mailboxName.text);
+            $mmbd.setLineNumber($mailboxName.getLine()); $mmbd.setCharacter($mailboxName.getCharPositionInLine());}
+        LPAREN (el = expressionList {$mmbd.getBindings().addAll($el.el);})? RPAREN
+        SEMI
+    ;
 
 timedMainRebecDefinition returns [TimedMainRebecDefinition mrd]
 	:

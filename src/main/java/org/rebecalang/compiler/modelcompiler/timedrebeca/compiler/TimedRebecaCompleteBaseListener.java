@@ -59,6 +59,18 @@ public class TimedRebecaCompleteBaseListener implements TimedRebecaCompleteListe
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterMainMailboxDefinition(TimedRebecaCompleteParser.MainMailboxDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMainMailboxDefinition(TimedRebecaCompleteParser.MainMailboxDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterTimedMainRebecDefinition(TimedRebecaCompleteParser.TimedMainRebecDefinitionContext ctx) { }
 	/**
 	 * {@inheritDoc}
