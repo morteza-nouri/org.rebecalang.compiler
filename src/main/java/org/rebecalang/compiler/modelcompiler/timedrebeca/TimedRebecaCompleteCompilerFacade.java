@@ -12,12 +12,7 @@ import org.rebecalang.compiler.modelcompiler.abstractrebeca.TypeSystemInitialize
 import org.rebecalang.compiler.modelcompiler.corerebeca.CoreRebecaCompleteCompilerFacade;
 import org.rebecalang.compiler.modelcompiler.corerebeca.CoreRebecaLabelUtility;
 import org.rebecalang.compiler.modelcompiler.corerebeca.CoreRebecaTypeSystem;
-import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.Annotation;
-import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.FormalParameterDeclaration;
-import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.Literal;
-import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.SynchMethodDeclaration;
-import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.TermPrimary;
-import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.Type;
+import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.*;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.compiler.TimedRebecaCompleteLexer;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.compiler.TimedRebecaCompleteParser;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel.MailboxDeclaration;
@@ -154,7 +149,8 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 	protected void semanticCheckMailboxDeclarations() {
 		for (MailboxDeclaration mailboxDeclaration : ((TimedRebecaCode)rebecaModel.getRebecaCode()).getMailboxDeclaration()) {
 			scopeHandler.pushScopeRecord(TimedRebecaLabelUtility.MAILBOX);
-			//TODO: KnownSenders are valid? ...
+			addKnownSendersOfMailboxToScope(mailboxDeclaration);
+			semanticCheckForOrdersOfMailboxDeclaration(mailboxDeclaration);
 			scopeHandler.popScopeRecord();
 		}
 	}
@@ -179,6 +175,25 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 				setAnnotationConstantValue(annotation, valueCheckResult.getSecond());
 			}
 		}
+	}
+	private void addKnownSendersOfMailboxToScope(MailboxDeclaration mailboxDeclaration) {
+		for (FieldDeclaration fd : mailboxDeclaration.getKnownSenders()) {
+			statementSemanticCheckContainer.check(fd);
+			for (VariableDeclarator vd : fd.getVariableDeclarators()) {
+				scopeHandler.updateVaribaleInCurrentScope(vd.getVariableName(), fd.getType(),
+						TimedRebecaLabelUtility.KNOWNSENDER_VARIABLE, vd.getLineNumber(), vd.getCharacter());
+
+				if (vd.getVariableInitializer() != null) {
+					CodeCompilationException rce = new CodeCompilationException(
+							"Known senders are only initialized during instantiation", vd.getLineNumber(),
+							vd.getCharacter());
+					exceptionContainer.addException(rce);
+				}
+			}
+		}
+	}
+	private void semanticCheckForOrdersOfMailboxDeclaration(MailboxDeclaration mailboxDeclaration) {
+		//TODO: Should be implemented!
 	}
 
 	private boolean conflictInPriorityType(PriorityType newPriorityType, Annotation annotation) {

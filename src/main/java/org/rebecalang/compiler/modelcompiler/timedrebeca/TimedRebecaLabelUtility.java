@@ -6,6 +6,7 @@ public class TimedRebecaLabelUtility {
 	public final static Label DELAY;
 	public static final Label TIMED_VARIABLE;
 	public static final Label MAILBOX;
+	public static final Label KNOWNSENDER_VARIABLE;
 	
 
 	static {
@@ -15,5 +16,7 @@ public class TimedRebecaLabelUtility {
 		TIMED_VARIABLE.setName("timed-variable");
 		MAILBOX = new Label();
 		MAILBOX.setName("mailbox");
+		KNOWNSENDER_VARIABLE = new Label();
+		KNOWNSENDER_VARIABLE.setName("known-sender");
 	}
 }
