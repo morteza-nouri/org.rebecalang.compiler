@@ -1,11 +1,9 @@
 mailbox BMailbox {
     knownsenders {
         A a;
-        A aa;
     }
     orders {
-        sender == a,
-        sender == b
+        sender == a
     }
 }
 
@@ -40,6 +38,7 @@ reactiveclass B (3) {
 }
 
 main {
+    BMailbox bmailbox(a,);
 	A a(b):();
-	B b<BMailbox>():();
+	B b<bmailbox>():();
 }
