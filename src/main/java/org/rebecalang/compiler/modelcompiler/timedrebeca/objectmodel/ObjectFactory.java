@@ -46,6 +46,26 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link TimedMainDeclaration }
+     * 
+     * @return
+     *     the new instance of {@link TimedMainDeclaration }
+     */
+    public TimedMainDeclaration createTimedMainDeclaration() {
+        return new TimedMainDeclaration();
+    }
+
+    /**
+     * Create an instance of {@link MainMailboxDefinition }
+     * 
+     * @return
+     *     the new instance of {@link MainMailboxDefinition }
+     */
+    public MainMailboxDefinition createMainMailboxDefinition() {
+        return new MainMailboxDefinition();
+    }
+
+    /**
      * Create an instance of {@link TimedMainRebecDefinition }
      * 
      * @return

@@ -16,10 +16,33 @@
         <xs:complexContent>
             <xs:extension base="corerebeca:RebecaCode">
                 <xs:sequence>
-                    <xs:element name="mailboxDeclaration" type="MailboxDeclaration" maxOccurs="unbounded" minOccurs="0"/>
+                    <xs:element type="MailboxDeclaration" name="mailboxDeclaration"
+                                maxOccurs="unbounded" minOccurs="0"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="TimedMainDeclaration">
+        <xs:complexContent>
+            <xs:extension base="corerebeca:MainDeclaration">
+                <xs:sequence>
+                    <xs:element type="MainMailboxDefinition" name="mainMailboxDefinition"
+                                maxOccurs="unbounded" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="MainMailboxDefinition">
+        <xs:sequence>
+            <xs:element name="bindings" type="corerebecaexp:Expression"
+                        maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="type" type="corerebecaexp:Type" />
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" />
+        <xs:attribute name="lineNumber" type="xs:int" />
+        <xs:attribute name="character" type="xs:int" />
     </xs:complexType>
 
     <xs:complexType name="TimedMainRebecDefinition">

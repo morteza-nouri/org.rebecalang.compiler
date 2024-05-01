@@ -113,7 +113,7 @@
 		<jxb:bindings node="//xs:complexType[@name='InterfaceDeclaration']">
 			<jxb:class ref="org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.InterfaceDeclaration" />
 		</jxb:bindings>
-		<jxb:bindings node="//xs:element[@name='MainDeclaration']">
+		<jxb:bindings node="//xs:complexType[@name='MainDeclaration']">
 			<jxb:class ref="org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.MainDeclaration" />
 		</jxb:bindings>
 		<jxb:bindings node="//xs:complexType[@name='MainRebecDefinition']">

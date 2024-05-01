@@ -5,7 +5,7 @@
 //
 
 
-package org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel;
+package org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,24 +14,26 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlType;
+import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.Expression;
+import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.Type;
 
 
 /**
- * <p>Java class for MainDeclaration complex type.
+ * <p>Java class for MainMailboxDefinition complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>{@code
- * <complexType name="MainDeclaration">
+ * <complexType name="MainMailboxDefinition">
  *   <complexContent>
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       <sequence>
- *         <element name="MainRebecDefinition" type="{http://rebecalang.org/compiler/modelcompiler/corerebeca}MainRebecDefinition" maxOccurs="unbounded" minOccurs="0"/>
+ *         <element name="bindings" type="{http://rebecalang.org/compiler/modelcompiler/corerebecaexpression}Expression" maxOccurs="unbounded" minOccurs="0"/>
+ *         <element name="type" type="{http://rebecalang.org/compiler/modelcompiler/corerebecaexpression}Type"/>
  *       </sequence>
+ *       <attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       <attribute name="lineNumber" type="{http://www.w3.org/2001/XMLSchema}int" />
  *       <attribute name="character" type="{http://www.w3.org/2001/XMLSchema}int" />
- *       <attribute name="endLineNumber" type="{http://www.w3.org/2001/XMLSchema}int" />
- *       <attribute name="endCharacter" type="{http://www.w3.org/2001/XMLSchema}int" />
  *     </restriction>
  *   </complexContent>
  * </complexType>
@@ -40,51 +42,99 @@ import jakarta.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MainDeclaration", propOrder = {
-    "mainRebecDefinition"
+@XmlType(name = "MainMailboxDefinition", propOrder = {
+    "bindings",
+    "type"
 })
-public class MainDeclaration {
+public class MainMailboxDefinition {
 
-    @XmlElement(name = "MainRebecDefinition")
-    protected List<MainRebecDefinition> mainRebecDefinition;
+    protected List<Expression> bindings;
+    @XmlElement(required = true)
+    protected Type type;
+    @XmlAttribute(name = "name")
+    protected String name;
     @XmlAttribute(name = "lineNumber")
     protected Integer lineNumber;
     @XmlAttribute(name = "character")
     protected Integer character;
-    @XmlAttribute(name = "endLineNumber")
-    protected Integer endLineNumber;
-    @XmlAttribute(name = "endCharacter")
-    protected Integer endCharacter;
 
     /**
-     * Gets the value of the mainRebecDefinition property.
+     * Gets the value of the bindings property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the Jakarta XML Binding object.
-     * This is why there is not a {@code set} method for the mainRebecDefinition property.
+     * This is why there is not a {@code set} method for the bindings property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getMainRebecDefinition().add(newItem);
+     *    getBindings().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link MainRebecDefinition }
+     * {@link Expression }
      * 
      * 
      * @return
-     *     The value of the mainRebecDefinition property.
+     *     The value of the bindings property.
      */
-    public List<MainRebecDefinition> getMainRebecDefinition() {
-        if (mainRebecDefinition == null) {
-            mainRebecDefinition = new ArrayList<>();
+    public List<Expression> getBindings() {
+        if (bindings == null) {
+            bindings = new ArrayList<>();
         }
-        return this.mainRebecDefinition;
+        return this.bindings;
+    }
+
+    /**
+     * Gets the value of the type property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Type }
+     *     
+     */
+    public Type getType() {
+        return type;
+    }
+
+    /**
+     * Sets the value of the type property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Type }
+     *     
+     */
+    public void setType(Type value) {
+        this.type = value;
+    }
+
+    /**
+     * Gets the value of the name property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setName(String value) {
+        this.name = value;
     }
 
     /**
@@ -133,54 +183,6 @@ public class MainDeclaration {
      */
     public void setCharacter(Integer value) {
         this.character = value;
-    }
-
-    /**
-     * Gets the value of the endLineNumber property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getEndLineNumber() {
-        return endLineNumber;
-    }
-
-    /**
-     * Sets the value of the endLineNumber property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setEndLineNumber(Integer value) {
-        this.endLineNumber = value;
-    }
-
-    /**
-     * Gets the value of the endCharacter property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getEndCharacter() {
-        return endCharacter;
-    }
-
-    /**
-     * Sets the value of the endCharacter property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setEndCharacter(Integer value) {
-        this.endCharacter = value;
     }
 
 }
