@@ -20,23 +20,3 @@ AFTER
 DEADLINE
 	:	'deadline'
 	;
-
-ARRIVALTIME
-    : 'arriavalTime'
-    ;
-
-EXECUTIONTIME
-    : 'executionTime'
-    ;
-
-DELAY
-    : 'delay'
-    ;
-
-MIN
-    : 'min'
-    ;
-
-MAX
-    : 'max'
-    ;
