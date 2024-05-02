@@ -47,6 +47,6 @@ public class MailboxTest {
         compiler.compileRebecaFile(model, extension, CoreVersion.CORE_2_1);
 
         exceptionContainer.print(System.out);
-        Assertions.assertEquals(exceptionContainer.getExceptions().size(), 1);
+        Assertions.assertEquals(exceptionContainer.getExceptions().get(model).size(), 2);
     }
 }
