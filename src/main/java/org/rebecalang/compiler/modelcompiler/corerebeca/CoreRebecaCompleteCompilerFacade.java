@@ -255,19 +255,20 @@ public class CoreRebecaCompleteCompilerFacade extends AbstractCompilerFacade {
 	@Override
 	public void semanticCheck() {
 		super.semanticCheck();
-		semanticCheckRebecaModel();
-	}
 
-	protected void semanticCheckRebecaModel() {
 		scopeHandler.pushScopeRecord(CoreRebecaLabelUtility.REBECA_MODEL);
 
 		addEnvironmentVariablesToScope();
 
-		semanticCheckReactiveClassDeclarations();
+		semanticCheckRebecaDeclarations();
 
 		semanticCheckMainBindings(rebecaModel);
 
 		scopeHandler.popScopeRecord();
+	}
+
+	protected void semanticCheckRebecaDeclarations() {
+		semanticCheckReactiveClassDeclarations();
 	}
 
 	protected void semanticCheckReactiveClassDeclarations() {
@@ -477,13 +478,16 @@ public class CoreRebecaCompleteCompilerFacade extends AbstractCompilerFacade {
 		}
 	}
 
-
 	protected void semanticCheckMainBindings(RebecaModel rebecaModel) {
+		scopeHandler.pushScopeRecord(CoreRebecaLabelUtility.MAIN);
+		semanticCheckForActors(rebecaModel);
+		scopeHandler.popScopeRecord();
+	}
 
+	protected void semanticCheckForActors(RebecaModel rebecaModel) {
 		// Initializing the scope stack by the defined actors and check for repeated
 		// actors
 		// Types of actor instances are set here.
-		scopeHandler.pushScopeRecord(CoreRebecaLabelUtility.MAIN);
 		for (MainRebecDefinition mrd : rebecaModel.getRebecaCode().getMainDeclaration().getMainRebecDefinition()) {
 			try {
 				scopeHandler.retreiveVariableFromScope(mrd.getName());
@@ -582,12 +586,12 @@ public class CoreRebecaCompleteCompilerFacade extends AbstractCompilerFacade {
 			}
 			if (!TypesUtilities.areTheSame(knownRebecsBindingsTypes, exprectedTypes, Type.getCastableComparator())) {
 				CodeCompilationException rce = new CodeCompilationException(
-						createCheckMainBindingsExceptionMessage(knownRebecs, knownRebecsBindingsTypes, rcd.getName()),
+						createCheckMainBindingsExceptionMessage(knownRebecs, knownRebecsBindingsTypes, rcd.getName(),
+								"knownrebecs"),
 						mrd.getLineNumber(), mrd.getCharacter());
 				exceptionContainer.addException(rce);
 			}
 		}
-		scopeHandler.popScopeRecord();
 	}
 
 	private ArrayList<FieldDeclaration> getKnownRebecs(ReactiveClassDeclaration lastRebec){
@@ -633,9 +637,9 @@ public class CoreRebecaCompleteCompilerFacade extends AbstractCompilerFacade {
 		return reactiveClasses;
 	}
 
-	private String createCheckMainBindingsExceptionMessage(
+	protected String createCheckMainBindingsExceptionMessage(
 			List<FieldDeclaration> knownRebecs, List<Type> bindings,
-			String reactiveClassName) {
+			String className, String bindingTypeName) {
 		String expected = "", actual = "";
 
 		for (FieldDeclaration fd : knownRebecs)
@@ -651,7 +655,7 @@ public class CoreRebecaCompleteCompilerFacade extends AbstractCompilerFacade {
 		if (!bindings.isEmpty())
 			actual = actual.substring(2);
 
-		return "The " + reactiveClassName + " knownrebecs type binding of (" + expected + ")"
+		return "The " + className + " " + bindingTypeName + " type binding of (" + expected + ")"
 				+ " is not applicable for the arguments (" + actual + ")";
 	}
 

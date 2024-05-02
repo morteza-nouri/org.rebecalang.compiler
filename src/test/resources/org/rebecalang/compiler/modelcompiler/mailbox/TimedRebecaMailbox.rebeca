@@ -7,6 +7,15 @@ mailbox BMailbox {
     }
 }
 
+mailbox AMailbox {
+    knownsenders {
+        B b;
+    }
+    orders {
+        sender == a
+    }
+}
+
 reactiveclass A (3) {
 	knownrebecs {
 		B bb;
@@ -33,12 +42,14 @@ reactiveclass B (3) {
 	}
 
 	msgsrv m(A param1, int param2) {
+	    delay(5);
 		int value = now + currentMessageArrival + currentMessageDeadline + currentMessageWaitingTime;
 	}
 }
 
 main {
-    BMailbox bmailbox(a);
-	A a(b):();
-	B b<bmailbox>():();
+    BMailbox tmbox(a);
+    AMailbox xbox(b);
+	A a<xbox>(b):();
+	B b<tmbox>():();
 }

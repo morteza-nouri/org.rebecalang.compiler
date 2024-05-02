@@ -1,5 +1,7 @@
 package org.rebecalang.compiler.modelcompiler.timedrebeca;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.antlr.v4.runtime.CharStream;
@@ -15,11 +17,11 @@ import org.rebecalang.compiler.modelcompiler.corerebeca.CoreRebecaTypeSystem;
 import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.*;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.compiler.TimedRebecaCompleteLexer;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.compiler.TimedRebecaCompleteParser;
-import org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel.MailboxDeclaration;
-import org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel.TimedRebecaCode;
+import org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel.*;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.statementsemanticchecker.expression.TimedPrimaryTermSemanticCheck;
 import org.rebecalang.compiler.utils.CodeCompilationException;
 import org.rebecalang.compiler.utils.Pair;
+import org.rebecalang.compiler.utils.TypesUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -52,7 +54,6 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 	public void semanticCheck() {
 		this.modelPriorityType = null;
 		super.semanticCheck();
-		semanticCheckRebecaModel();
 	}
 	@Override
 	protected void initializeExpressionSemanticCheckContainer() {
@@ -131,27 +132,74 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		return new TimedRebecaCompleteParser(tokens);
 	}
-	
-	protected void semanticCheckRebecaModel() {
-		scopeHandler.pushScopeRecord(CoreRebecaLabelUtility.REBECA_MODEL);
 
-		addEnvironmentVariablesToScope();
-
+	protected void semanticCheckRebecaDeclarations() {
+		super.semanticCheckRebecaDeclarations();
 		semanticCheckMailboxDeclarations();
+	}
 
-		semanticCheckReactiveClassDeclarations();
-
-		semanticCheckMainBindings(rebecaModel);
-
+	protected void semanticCheckMainBindings(RebecaModel rebecaModel) {
+		scopeHandler.pushScopeRecord(CoreRebecaLabelUtility.MAIN);
+		semanticCheckForActors(rebecaModel);
+		semanticCheckForMailboxes(rebecaModel);
+		semanticCheckForActorsBundledMailbox(rebecaModel);
 		scopeHandler.popScopeRecord();
 	}
 
-	protected void semanticCheckMailboxDeclarations() {
-		for (MailboxDeclaration mailboxDeclaration : ((TimedRebecaCode)rebecaModel.getRebecaCode()).getMailboxDeclaration()) {
-			scopeHandler.pushScopeRecord(TimedRebecaLabelUtility.MAILBOX);
-			addKnownSendersOfMailboxToScope(mailboxDeclaration);
-			semanticCheckForOrdersOfMailboxDeclaration(mailboxDeclaration);
-			scopeHandler.popScopeRecord();
+	private void semanticCheckForActorsBundledMailbox(RebecaModel rebecaModel) {
+		for (MainRebecDefinition mrd : rebecaModel.getRebecaCode().getMainDeclaration().getMainRebecDefinition()) {
+			TermPrimary mbExpression = (TermPrimary) ((TimedMainRebecDefinition)mrd).getMailbox();
+			if (mbExpression == null)
+				continue;
+			try {
+				scopeHandler.retreiveVariableFromScope(mbExpression.getName());
+				Type mbType = statementSemanticCheckContainer.check(mbExpression).getFirst();
+				((TimedMainRebecDefinition) mrd).getMailbox().setType(mbType);
+			} catch (ScopeException e) {
+				CodeCompilationException cce = new CodeCompilationException(
+						"No Mailboxes were instantiated with name '" + mbExpression.getName() + "'",
+						mbExpression.getLineNumber(),
+						mbExpression.getCharacter());
+				exceptionContainer.addException(cce);
+			}
+		}
+	}
+
+	private void semanticCheckForMailboxes(RebecaModel rebecaModel) {
+		TimedMainDeclaration timedMainDeclaration = (TimedMainDeclaration) rebecaModel.getRebecaCode().getMainDeclaration();
+		for(MainMailboxDefinition mmbd : timedMainDeclaration.getMainMailboxDefinition()) {
+			try {
+				scopeHandler.retreiveVariableFromScope(mmbd.getName());
+				CodeCompilationException rce = new CodeCompilationException(
+						"Multiple definition for the mailbox " + mmbd.getName(), mmbd.getLineNumber(), mmbd.getCharacter());
+				this.exceptionContainer.addException(rce);
+			} catch (ScopeException se) {
+				try {
+					Type type =typeSystem.getType(mmbd.getType());
+					mmbd.setType(type);
+					scopeHandler.addVariableToCurrentScope(mmbd.getName(), type, CoreRebecaLabelUtility.LOCAL_VARIABLE,
+							mmbd.getLineNumber(), mmbd.getCharacter());
+				} catch (CodeCompilationException cce) {
+					cce.setColumn(mmbd.getCharacter());
+					cce.setLine(mmbd.getLineNumber());
+					exceptionContainer.addException(cce);
+				}
+			}
+		}
+		HashMap<String, MailboxDeclaration> mailboxDeclarations = getAllMailboxDeclarations();
+		for(MainMailboxDefinition mmbd : timedMainDeclaration.getMainMailboxDefinition()) {
+			LinkedList<Type> knownSendersBindingsTypes = semanticCheckKnownSendersBindings(mmbd);
+			MailboxDeclaration mailboxDeclaration = mailboxDeclarations.get(mmbd.getType().getTypeName());
+			List<FieldDeclaration> knownSenders = getKnownSenders(mailboxDeclaration);
+			List<Type> expectedSendersTypes = getExpectedSendersTypes(knownSenders);
+			if (!TypesUtilities.areTheSame(knownSendersBindingsTypes, expectedSendersTypes, Type.getCastableComparator())) {
+				CodeCompilationException cce = new CodeCompilationException(
+						createCheckMainBindingsExceptionMessage(knownSenders, knownSendersBindingsTypes,
+								mailboxDeclaration.getName(),
+								"knownsenders"),
+						mmbd.getLineNumber(), mmbd.getCharacter());
+				exceptionContainer.addException(cce);
+			}
 		}
 	}
 
@@ -176,6 +224,16 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 			}
 		}
 	}
+
+	private void semanticCheckMailboxDeclarations() {
+		for (MailboxDeclaration mailboxDeclaration : ((TimedRebecaCode)rebecaModel.getRebecaCode()).getMailboxDeclaration()) {
+			scopeHandler.pushScopeRecord(TimedRebecaLabelUtility.MAILBOX);
+			addKnownSendersOfMailboxToScope(mailboxDeclaration);
+			semanticCheckForOrdersOfMailboxDeclaration(mailboxDeclaration);
+			scopeHandler.popScopeRecord();
+		}
+	}
+
 	private void addKnownSendersOfMailboxToScope(MailboxDeclaration mailboxDeclaration) {
 		for (FieldDeclaration fd : mailboxDeclaration.getKnownSenders()) {
 			statementSemanticCheckContainer.check(fd);
@@ -194,6 +252,44 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 	}
 	private void semanticCheckForOrdersOfMailboxDeclaration(MailboxDeclaration mailboxDeclaration) {
 		//TODO: Should be implemented!
+	}
+
+	private HashMap<String, MailboxDeclaration> getAllMailboxDeclarations() {
+		HashMap<String, MailboxDeclaration> mailboxDeclarations = new HashMap<>();
+		for (MailboxDeclaration mbd : ((TimedRebecaCode)rebecaModel.getRebecaCode()).getMailboxDeclaration()) {
+			mailboxDeclarations.put(mbd.getName(), mbd);
+		}
+		return mailboxDeclarations;
+	}
+
+	private LinkedList<Type> semanticCheckKnownSendersBindings(MainMailboxDefinition mainMailboxDefinition) {
+		LinkedList<Type> knownSendersBindingsTypes = new LinkedList<>();
+		for (Expression expression : mainMailboxDefinition.getBindings()) {
+			knownSendersBindingsTypes.add(statementSemanticCheckContainer.check(expression).getFirst());
+		}
+		return knownSendersBindingsTypes;
+	}
+
+	private List<Type> getExpectedSendersTypes(List<FieldDeclaration> knownSenders) {
+		List<Type> expectedTypes = new LinkedList<>();
+		for (FieldDeclaration fd : knownSenders) {
+			for (int variableCounter = 0; variableCounter < fd.getVariableDeclarators().size(); variableCounter++) {
+				if (fd.getType() instanceof OrdinaryPrimitiveType) {
+					try {
+						expectedTypes.add(typeSystem.getType(fd.getType()));
+					} catch (CodeCompilationException e) {
+						e.setColumn(fd.getCharacter());
+						e.setLine(fd.getLineNumber());
+						exceptionContainer.addException(e);
+					}
+				}
+			}
+		}
+		return expectedTypes;
+	}
+
+	private List<FieldDeclaration> getKnownSenders(MailboxDeclaration mailboxDeclaration) {
+		return mailboxDeclaration.getKnownSenders();
 	}
 
 	private boolean conflictInPriorityType(PriorityType newPriorityType, Annotation annotation) {
