@@ -94,18 +94,27 @@ orderSpecifications returns [List<Expression> orders]
         (COMMA e = conditionalExpression {$orders.add($e.e);})*
     ;
 
-primary returns [TermPrimary tp]
+primary returns [PrimaryExpression tp]
     :   
-    id1 = IDENTIFIER {$tp = new TermPrimary(); $tp.setName($id1.text);
-					  $tp.setLineNumber($id1.getLine()); $tp.setCharacter($id1.getCharPositionInLine());}
+    id1 = IDENTIFIER {TermPrimary tpr = new TermPrimary(); tpr.setName($id1.text);
+					  tpr.setLineNumber($id1.getLine()); tpr.setCharacter($id1.getCharPositionInLine());
+					  $tp = tpr;
+					  }
     (	lp = LPAREN 
     	{TimedRebecaParentSuffixPrimary psp = new TimedRebecaParentSuffixPrimary(); 
     	 psp.setLineNumber($lp.getLine()); psp.setCharacter($lp.getCharPositionInLine());
-    	 $tp.setParentSuffixPrimary(psp);}
-		(el = expressionList {$tp.getParentSuffixPrimary().getArguments().addAll($el.el);})?
+    	 tpr.setParentSuffixPrimary(psp);
+    	 $tp = tpr;
+    	 }
+		(el = expressionList {tpr.getParentSuffixPrimary().getArguments().addAll($el.el); $tp = tpr;})?
 		RPAREN
     	(AFTER LPAREN ef = expression RPAREN {psp.setAfterExpression($ef.e);})?
     	(DEADLINE LPAREN ed = expression RPAREN {psp.setDeadlineExpression($ed.e);})?
     )?
-	(LBRACKET e2 = expression RBRACKET {$tp.getIndices().add($e2.e);})*
+	(LBRACKET e2 = expression RBRACKET {tpr.getIndices().add($e2.e); $tp = tpr;})*
+
+	| (agg = MIN | agg = MAX) {AggregationConditionPrimary ac = new AggregationConditionPrimary(); ac.setName($agg.text);
+                                 ac.setLineNumber($agg.getLine()); ac.setCharacter($agg.getCharPositionInLine());}
+        LPAREN e = expression {ac.setArgument($e.e); $tp = ac;} RPAREN
+
     ;

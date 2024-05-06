@@ -14,6 +14,14 @@ ORDERS
     : 'orders'
     ;
 
+MIN
+    : 'min'
+    ;
+
+MAX
+    : 'max'
+    ;
+
 AFTER
 	:	'after'
 	;

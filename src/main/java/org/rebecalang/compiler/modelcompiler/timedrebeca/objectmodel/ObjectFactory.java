@@ -95,4 +95,14 @@ public class ObjectFactory {
         return new TimedRebecaParentSuffixPrimary();
     }
 
+    /**
+     * Create an instance of {@link AggregationConditionPrimary }
+     * 
+     * @return
+     *     the new instance of {@link AggregationConditionPrimary }
+     */
+    public AggregationConditionPrimary createAggregationConditionPrimary() {
+        return new AggregationConditionPrimary();
+    }
+
 }
