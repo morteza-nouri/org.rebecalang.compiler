@@ -18,6 +18,7 @@ import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.*;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.compiler.TimedRebecaCompleteLexer;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.compiler.TimedRebecaCompleteParser;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel.*;
+import org.rebecalang.compiler.modelcompiler.timedrebeca.statementsemanticchecker.expression.AggregationConditionPrimarySemanticCheck;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.statementsemanticchecker.expression.TimedPrimaryTermSemanticCheck;
 import org.rebecalang.compiler.utils.CodeCompilationException;
 import org.rebecalang.compiler.utils.Pair;
@@ -61,6 +62,10 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 
 		expressionSemanticCheckContainer.registerSemanticsChecker(TermPrimary.class, 
 				appContext.getBean(TimedPrimaryTermSemanticCheck.class,
+				typeSystem,
+				expressionSemanticCheckContainer));
+		expressionSemanticCheckContainer.registerSemanticsChecker(AggregationConditionPrimary.class,
+				appContext.getBean(AggregationConditionPrimarySemanticCheck.class,
 				typeSystem,
 				expressionSemanticCheckContainer));
 	}
@@ -107,7 +112,6 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 				CoreRebecaLabelUtility.BUILT_IN_METHOD);
 		symbolTable.addMethod(null, getTimerValueMethod,
 				CoreRebecaLabelUtility.BUILT_IN_METHOD);
-
 	}
 	@Override
 	protected void addVariablesOfRebecaExtensionToScope() {
@@ -120,6 +124,12 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 			scopeHandler.addVariableToCurrentScope("currentMessageDeadline", CoreRebecaTypeSystem.INT_TYPE,
 					CoreRebecaLabelUtility.RESERVED_WORD, 0, 0);
 			scopeHandler.addVariableToCurrentScope("currentMessageWaitingTime", CoreRebecaTypeSystem.INT_TYPE,
+					CoreRebecaLabelUtility.RESERVED_WORD, 0, 0);
+			scopeHandler.addVariableToCurrentScope("messageArrivalTime", CoreRebecaTypeSystem.INT_TYPE,
+					CoreRebecaLabelUtility.RESERVED_WORD, 0, 0);
+			scopeHandler.addVariableToCurrentScope("messageDeadline", CoreRebecaTypeSystem.INT_TYPE,
+					CoreRebecaLabelUtility.RESERVED_WORD, 0, 0);
+			scopeHandler.addVariableToCurrentScope("messageExecutionTime", CoreRebecaTypeSystem.INT_TYPE,
 					CoreRebecaLabelUtility.RESERVED_WORD, 0, 0);
 		} catch (ScopeException e) {
 			e.printStackTrace();
@@ -235,6 +245,12 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 	}
 
 	private void addKnownSendersOfMailboxToScope(MailboxDeclaration mailboxDeclaration) {
+		try {
+			scopeHandler.addVariableToCurrentScope("sender", CoreRebecaTypeSystem.REACTIVE_CLASS_TYPE,
+					CoreRebecaLabelUtility.RESERVED_WORD, 0, 0);
+		} catch (ScopeException e) {
+			e.printStackTrace();
+		}
 		for (FieldDeclaration fd : mailboxDeclaration.getKnownSenders()) {
 			statementSemanticCheckContainer.check(fd);
 			for (VariableDeclarator vd : fd.getVariableDeclarators()) {
@@ -252,6 +268,16 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 	}
 	private void semanticCheckForOrdersOfMailboxDeclaration(MailboxDeclaration mailboxDeclaration) {
 		//TODO: Should be implemented!
+		for(Expression expression : mailboxDeclaration.getOrders()) {
+			Pair<Type, Object> result = expressionSemanticCheckContainer.check(expression);
+//			if (result.getFirst() != CoreRebecaTypeSystem.BOOLEAN_TYPE) {
+//				CodeCompilationException rce = new CodeCompilationException(
+//						"order expression type should be boolean.",
+//						expression.getLineNumber(),
+//						expression.getCharacter());
+//				exceptionContainer.addException(rce);
+//			}
+		}
 	}
 
 	private HashMap<String, MailboxDeclaration> getAllMailboxDeclarations() {

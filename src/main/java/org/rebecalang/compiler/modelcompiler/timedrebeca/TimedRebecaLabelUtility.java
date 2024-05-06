@@ -7,7 +7,8 @@ public class TimedRebecaLabelUtility {
 	public static final Label TIMED_VARIABLE;
 	public static final Label MAILBOX;
 	public static final Label KNOWNSENDER_VARIABLE;
-	
+	public static final Label AGGREGATION_ORDERSPEC;
+
 
 	static {
 		DELAY = new Label();
@@ -18,5 +19,7 @@ public class TimedRebecaLabelUtility {
 		MAILBOX.setName("mailbox");
 		KNOWNSENDER_VARIABLE = new Label();
 		KNOWNSENDER_VARIABLE.setName("known-sender");
+		AGGREGATION_ORDERSPEC = new Label();
+		AGGREGATION_ORDERSPEC.setName("aggregation-order-spec");
 	}
 }

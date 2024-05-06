@@ -3,7 +3,8 @@ mailbox BMailbox {
         A a;
     }
     orders {
-        sender == a
+        sender == a,
+        min(messageArrivalTime)
     }
 }
 
@@ -12,7 +13,9 @@ mailbox AMailbox {
         B b;
     }
     orders {
-        sender == a
+        max(messageDeadline),
+        min(messageExecutionTime),
+        sender == b
     }
 }
 
