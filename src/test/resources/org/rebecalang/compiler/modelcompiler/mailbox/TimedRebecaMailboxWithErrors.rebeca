@@ -5,7 +5,8 @@ mailbox BMailbox {
     }
     orders {
         sender == a,
-        sender == b
+        sender == bb,
+        messageServerName == foo
     }
 }
 

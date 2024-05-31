@@ -4,10 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.rebecalang.compiler.CompilerConfig;
 import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.RebecaModel;
-import org.rebecalang.compiler.utils.CompilerExtension;
-import org.rebecalang.compiler.utils.CoreVersion;
-import org.rebecalang.compiler.utils.ExceptionContainer;
-import org.rebecalang.compiler.utils.Pair;
+import org.rebecalang.compiler.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -39,14 +36,21 @@ public class MailboxTest {
     }
 
     @Test
-    public void GIVEN_DuplicateMailboxes_WHEN_Compiling_Then_1Error() {
-        File model = new File(MODEL_FILES_BASE + "TimedRebecaWithDuplicateMailboxes.rebeca");
+    public void GIVEN_TimedRebecaMailboxWithError_WHEN_Compiling_Then_getErrors() {
+        File model = new File(MODEL_FILES_BASE + "TimedRebecaMailboxWithErrors.rebeca");
         Set<CompilerExtension> extension = new HashSet<CompilerExtension>();
         extension.add(CompilerExtension.TIMED_REBECA);
 
         compiler.compileRebecaFile(model, extension, CoreVersion.CORE_2_1);
 
         exceptionContainer.print(System.out);
-        Assertions.assertEquals(exceptionContainer.getExceptions().get(model).size(), 2);
+
+        ExceptionContainer expectedExceptionContainer = new ExceptionContainer();
+        expectedExceptionContainer.setCorrespondingResource(model);
+        expectedExceptionContainer.addException(new ScopeException("\"bb\" undeclared", 8, 18));
+        expectedExceptionContainer.addException(new ScopeException("\"foo\" undeclared", 9, 29));
+        expectedExceptionContainer.addException(new CodeCompilationException("Multiple Definition of BMailbox", 13, 8));
+        expectedExceptionContainer.addException(new CodeCompilationException("No Mailboxes were instantiated with name 'BMailbox'", 52, 5));
+        Assertions.assertEquals(exceptionContainer, expectedExceptionContainer);
     }
 }
