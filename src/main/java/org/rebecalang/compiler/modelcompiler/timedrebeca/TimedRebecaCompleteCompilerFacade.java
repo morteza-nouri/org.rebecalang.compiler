@@ -131,6 +131,8 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 					CoreRebecaLabelUtility.RESERVED_WORD, 0, 0);
 			scopeHandler.addVariableToCurrentScope("messageExecutionTime", CoreRebecaTypeSystem.INT_TYPE,
 					CoreRebecaLabelUtility.RESERVED_WORD, 0, 0);
+            scopeHandler.addVariableToCurrentScope("messageServerName", CoreRebecaTypeSystem.STRING_TYPE,
+                    CoreRebecaLabelUtility.RESERVED_WORD, 0, 0);
 		} catch (ScopeException e) {
 			e.printStackTrace();
 		}
@@ -268,14 +270,33 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 	}
 	private void semanticCheckForOrdersOfMailboxDeclaration(MailboxDeclaration mailboxDeclaration) {
 		//TODO: Should be implemented!
+		addAllMessageServersNamesToScope();
 		for(Expression expression : mailboxDeclaration.getOrders()) {
 			Pair<Type, Object> result = expressionSemanticCheckContainer.check(expression);
-			if (result.getFirst() != CoreRebecaTypeSystem.BOOLEAN_TYPE) {
-				CodeCompilationException rce = new CodeCompilationException(
-						"order specification type should be boolean.",
-						expression.getLineNumber(),
-						expression.getCharacter());
-				exceptionContainer.addException(rce);
+//			if (result.getFirst() != CoreRebecaTypeSystem.BOOLEAN_TYPE) {
+//				CodeCompilationException rce = new CodeCompilationException(
+//						"order specification type should be boolean.",
+//						expression.getLineNumber(),
+//						expression.getCharacter());
+//				exceptionContainer.addException(rce);
+//			}
+		}
+	}
+
+	private void addAllMessageServersNamesToScope() {
+		for (ReactiveClassDeclaration rcd : rebecaModel.getRebecaCode().getReactiveClassDeclaration()) {
+			for (MsgsrvDeclaration msgsrv : rcd.getMsgsrvs()) {
+				try {
+					scopeHandler.addVariableToCurrentScope(
+							msgsrv.getName(),
+							CoreRebecaTypeSystem.STRING_TYPE,
+							CoreRebecaLabelUtility.MSGSRV,
+							msgsrv.getLineNumber(),
+							msgsrv.getCharacter()
+					);
+				} catch (ScopeException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
