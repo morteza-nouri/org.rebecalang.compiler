@@ -270,13 +270,13 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		//TODO: Should be implemented!
 		for(Expression expression : mailboxDeclaration.getOrders()) {
 			Pair<Type, Object> result = expressionSemanticCheckContainer.check(expression);
-//			if (result.getFirst() != CoreRebecaTypeSystem.BOOLEAN_TYPE) {
-//				CodeCompilationException rce = new CodeCompilationException(
-//						"order expression type should be boolean.",
-//						expression.getLineNumber(),
-//						expression.getCharacter());
-//				exceptionContainer.addException(rce);
-//			}
+			if (result.getFirst() != CoreRebecaTypeSystem.BOOLEAN_TYPE) {
+				CodeCompilationException rce = new CodeCompilationException(
+						"order specification type should be boolean.",
+						expression.getLineNumber(),
+						expression.getCharacter());
+				exceptionContainer.addException(rce);
+			}
 		}
 	}
 
