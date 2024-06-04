@@ -17,6 +17,15 @@ mailbox BMailbox {
     }
 }
 
+mailbox CMailbox {
+    knownsenders {
+
+    }
+    orders {
+
+    }
+}
+
 reactiveclass A (3) {
 	knownrebecs {
 		B bb;

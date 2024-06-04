@@ -50,7 +50,7 @@ public class MailboxTest {
         expectedExceptionContainer.addException(new ScopeException("\"bb\" undeclared", 8, 18));
         expectedExceptionContainer.addException(new ScopeException("\"foo\" undeclared", 9, 29));
         expectedExceptionContainer.addException(new CodeCompilationException("Multiple Definition of BMailbox", 13, 8));
-        expectedExceptionContainer.addException(new CodeCompilationException("No Mailboxes were instantiated with name 'BMailbox'", 52, 5));
+        expectedExceptionContainer.addException(new CodeCompilationException("No Mailboxes were instantiated with name 'BMailbox'", 61, 5));
         Assertions.assertEquals(exceptionContainer, expectedExceptionContainer);
     }
 }

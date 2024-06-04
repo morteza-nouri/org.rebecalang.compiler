@@ -23,7 +23,7 @@ public class TimedRebecaSymbolTableInitializer extends SymbolTableInitializer {
 
     protected void addMailboxDeclarationsToSymbolTableInInitialization(TimedRebecaCode rebecaCode) {
         for (MailboxDeclaration mailboxDeclaration : rebecaCode.getMailboxDeclaration()) {
-            checkMailboxDeclarationIsNotEmpty(mailboxDeclaration);
+//            checkMailboxDeclarationIsNotEmpty(mailboxDeclaration);
             //TODO: Make sure that no orders defined on unknown senders
             try {
                 Type type = typeSystem.getType(mailboxDeclaration.getName());
