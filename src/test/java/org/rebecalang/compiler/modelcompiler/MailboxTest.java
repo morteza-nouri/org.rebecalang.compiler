@@ -32,7 +32,6 @@ public class MailboxTest {
 
         exceptionContainer.print(System.out);
         Assertions.assertTrue(exceptionContainer.exceptionsIsEmpty());
-
     }
 
     @Test
@@ -52,5 +51,17 @@ public class MailboxTest {
         expectedExceptionContainer.addException(new CodeCompilationException("Multiple Definition of BMailbox", 13, 8));
         expectedExceptionContainer.addException(new CodeCompilationException("No Mailboxes were instantiated with name 'BMailbox'", 61, 5));
         Assertions.assertEquals(exceptionContainer, expectedExceptionContainer);
+    }
+
+    @Test
+    public void GIVEN_TicketServiceEmptyMailboxAndDuplicateMsgSrvName_WHEN_Compiling_THEN_noError() {
+        File model = new File(MODEL_FILES_BASE + "TicketServiceMailbox.rebeca");
+        Set<CompilerExtension> extension = new HashSet<CompilerExtension>();
+        extension.add(CompilerExtension.TIMED_REBECA);
+
+        compiler.compileRebecaFile(model, extension, CoreVersion.CORE_2_1);
+
+        exceptionContainer.print(System.out);
+        Assertions.assertTrue(exceptionContainer.exceptionsIsEmpty());
     }
 }

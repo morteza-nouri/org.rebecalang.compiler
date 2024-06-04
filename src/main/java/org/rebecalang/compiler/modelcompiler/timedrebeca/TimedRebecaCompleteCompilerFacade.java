@@ -287,15 +287,19 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		for (ReactiveClassDeclaration rcd : rebecaModel.getRebecaCode().getReactiveClassDeclaration()) {
 			for (MsgsrvDeclaration msgsrv : rcd.getMsgsrvs()) {
 				try {
-					scopeHandler.addVariableToCurrentScope(
-							msgsrv.getName(),
-							CoreRebecaTypeSystem.STRING_TYPE,
-							CoreRebecaLabelUtility.MSGSRV,
-							msgsrv.getLineNumber(),
-							msgsrv.getCharacter()
-					);
-				} catch (ScopeException e) {
-					e.printStackTrace();
+					scopeHandler.retreiveVariableFromScope(msgsrv.getName());
+				} catch (ScopeException ignored) {
+					try {
+						scopeHandler.addVariableToCurrentScope(
+								msgsrv.getName(),
+								CoreRebecaTypeSystem.STRING_TYPE,
+								CoreRebecaLabelUtility.MSGSRV,
+								msgsrv.getLineNumber(),
+								msgsrv.getCharacter()
+						);
+					} catch (ScopeException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
