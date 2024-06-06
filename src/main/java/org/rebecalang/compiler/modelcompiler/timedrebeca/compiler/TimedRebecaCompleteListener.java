@@ -35,6 +35,16 @@ public interface TimedRebecaCompleteListener extends ParseTreeListener {
 	 */
 	void exitMailboxDeclaration(TimedRebecaCompleteParser.MailboxDeclarationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#networkDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterNetworkDeclaration(TimedRebecaCompleteParser.NetworkDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TimedRebecaCompleteParser#networkDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitNetworkDeclaration(TimedRebecaCompleteParser.NetworkDeclarationContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#timedMainDeclaration}.
 	 * @param ctx the parse tree
 	 */
@@ -55,6 +65,16 @@ public interface TimedRebecaCompleteListener extends ParseTreeListener {
 	 */
 	void exitMainMailboxDefinition(TimedRebecaCompleteParser.MainMailboxDefinitionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#mainNetworkDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterMainNetworkDefinition(TimedRebecaCompleteParser.MainNetworkDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TimedRebecaCompleteParser#mainNetworkDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitMainNetworkDefinition(TimedRebecaCompleteParser.MainNetworkDefinitionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#timedMainRebecDefinition}.
 	 * @param ctx the parse tree
 	 */
@@ -64,6 +84,46 @@ public interface TimedRebecaCompleteListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTimedMainRebecDefinition(TimedRebecaCompleteParser.TimedMainRebecDefinitionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#delayExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterDelayExpression(TimedRebecaCompleteParser.DelayExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TimedRebecaCompleteParser#delayExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitDelayExpression(TimedRebecaCompleteParser.DelayExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#lossExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterLossExpression(TimedRebecaCompleteParser.LossExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TimedRebecaCompleteParser#lossExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitLossExpression(TimedRebecaCompleteParser.LossExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#delaySpecifications}.
+	 * @param ctx the parse tree
+	 */
+	void enterDelaySpecifications(TimedRebecaCompleteParser.DelaySpecificationsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TimedRebecaCompleteParser#delaySpecifications}.
+	 * @param ctx the parse tree
+	 */
+	void exitDelaySpecifications(TimedRebecaCompleteParser.DelaySpecificationsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#lossSpecifications}.
+	 * @param ctx the parse tree
+	 */
+	void enterLossSpecifications(TimedRebecaCompleteParser.LossSpecificationsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link TimedRebecaCompleteParser#lossSpecifications}.
+	 * @param ctx the parse tree
+	 */
+	void exitLossSpecifications(TimedRebecaCompleteParser.LossSpecificationsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link TimedRebecaCompleteParser#orderSpecifications}.
 	 * @param ctx the parse tree

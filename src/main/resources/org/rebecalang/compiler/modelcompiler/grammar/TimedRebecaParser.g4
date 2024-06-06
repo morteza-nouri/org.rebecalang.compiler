@@ -27,6 +27,8 @@ rebecaCode returns [TimedRebecaCode rc]
         (
             mbd = mailboxDeclaration {$rc.getMailboxDeclaration().add($mbd.mbd);}
             |
+            nd = networkDeclaration {$rc.getNetworkDeclaration().add($nd.nd);}
+            |
         	rcd = reactiveClassDeclaration {$rc.getReactiveClassDeclaration().add($rcd.rcd);}
         	|
         	intd = interfaceDeclaration {$rc.getInterfaceDeclaration().add($intd.intd);}
@@ -43,7 +45,7 @@ mailboxDeclaration returns [MailboxDeclaration mbd]
         	}
         LBRACE
 
-        (KNONWSENDERS
+        (KNOWNSENDERS
         LBRACE
             (fd = fieldDeclaration {$mbd.getKnownSenders().add($fd.fd);} SEMI)*
         RBRACE)?
@@ -55,13 +57,46 @@ mailboxDeclaration returns [MailboxDeclaration mbd]
         RBRACE {$mbd.setEndLineNumber($RBRACE.getLine());$mbd.setEndCharacter($RBRACE.getCharPositionInLine());}
     ;
 
+networkDeclaration returns [NetworkDeclaration nd]
+    :
+        {$nd = new NetworkDeclaration();}
+        NETWORK networkName = IDENTIFIER
+            {
+                $nd.setName($networkName.text);
+                $nd.setLineNumber($networkName.getLine()); $nd.setCharacter($networkName.getCharPositionInLine());
+            }
+        LBRACE
+
+        (KNOWNNODES
+        LBRACE
+            (fd = fieldDeclaration {$nd.getKnownNodes().add($fd.fd);} SEMI)*
+        RBRACE)?
+
+        (DELAYS
+        LBRACE
+            (delays = delaySpecifications {$nd.getDelays().addAll($delays.delays);})*
+        RBRACE)?
+
+        (LOSSES
+        LBRACE
+            (losses = lossSpecifications {$nd.getLosses().addAll($losses.losses);})*
+        RBRACE
+        )?
+        RBRACE {$nd.setEndLineNumber($RBRACE.getLine()); $nd.setEndCharacter($RBRACE.getCharPositionInLine());}
+    ;
+
 timedMainDeclaration returns [TimedMainDeclaration md]
 	:
 		{$md = new TimedMainDeclaration();}
 		MAIN {$md.setLineNumber($MAIN.getLine());$md.setCharacter($MAIN.getCharPositionInLine());}
 		LBRACE
-		(mmbd = mainMailboxDefinition {$md.getMainMailboxDefinition().add($mmbd.mmbd);})*
-		(mrd = timedMainRebecDefinition {$md.getMainRebecDefinition().add($mrd.mrd);})*
+		(
+    		mmbd = mainMailboxDefinition {$md.getMainMailboxDefinition().add($mmbd.mmbd);}
+    		|
+    		mnd = mainNetworkDefinition {$md.getMainNetworkDefinition().add($mnd.mnd);}
+    		|
+    		mrd = timedMainRebecDefinition {$md.getMainRebecDefinition().add($mrd.mrd);}
+		)*
 		RBRACE {$md.setEndLineNumber($RBRACE.getLine());$md.setEndCharacter($RBRACE.getCharPositionInLine());}
 	;
 
@@ -71,6 +106,16 @@ mainMailboxDefinition returns [MainMailboxDefinition mmbd]
         t = type mailboxName = IDENTIFIER {$mmbd.setType($t.t);$mmbd.setName($mailboxName.text);
             $mmbd.setLineNumber($mailboxName.getLine()); $mmbd.setCharacter($mailboxName.getCharPositionInLine());}
         LPAREN (el = expressionList {$mmbd.getBindings().addAll($el.el);})? RPAREN
+        SEMI
+    ;
+
+mainNetworkDefinition returns [MainNetworkDefinition mnd]
+    :
+        {$mnd = new MainNetworkDefinition();}
+        t = type networkName = IDENTIFIER {$mnd.setType($t.t);$mnd.setName($networkName.text);
+            $mnd.setLineNumber($networkName.getLine()); $mnd.setCharacter($networkName.getCharPositionInLine());}
+        (LT e = expression {$mnd.setMailbox($e.e);} GT)?
+        LPAREN (el = expressionList {$mnd.getBindings().addAll($el.el);})? RPAREN
         SEMI
     ;
 
@@ -86,6 +131,38 @@ timedMainRebecDefinition returns [TimedMainRebecDefinition mrd]
 		LPAREN (el = expressionList {$mrd.getArguments().addAll($el.el);})? RPAREN
 		SEMI
 	;
+
+delayExpression returns [DelayExpression e]
+    :
+     sender = IDENTIFIER {$e = new DelayExpression(); $e.setSenderName($sender.text);
+         $e.setLineNumber($sender.getLine()); $e.setCharacter($sender.getCharPositionInLine());}
+     CONNECT
+     receiver = IDENTIFIER {$e.setReceiverName($receiver.text);}
+     COLON
+     amount = expression {$e.setAmount($amount.e);}
+    ;
+
+lossExpression returns [LossExpression e]
+    :
+     sender = IDENTIFIER {$e = new LossExpression(); $e.setSenderName($sender.text);
+         $e.setLineNumber($sender.getLine()); $e.setCharacter($sender.getCharPositionInLine());}
+     CONNECT
+     receiver = IDENTIFIER {$e.setReceiverName($receiver.text);}
+    ;
+
+delaySpecifications returns [List<DelayExpression> delays]
+    :
+        {$delays = new LinkedList<DelayExpression>();}
+        e = delayExpression {$delays.add($e.e);}
+        (COMMA e = delayExpression {$delays.add($e.e);})*
+    ;
+
+lossSpecifications returns [List<LossExpression> losses]
+    :
+        {$losses = new LinkedList<LossExpression>();}
+        e = lossExpression {$losses.add($e.e);}
+        (COMMA e = lossExpression {$losses.add($e.e);})*
+    ;
 
 orderSpecifications returns [List<Expression> orders]
     :
@@ -116,5 +193,4 @@ primary returns [PrimaryExpression tp]
 	| (agg = MIN | agg = MAX) {AggregationConditionPrimary ac = new AggregationConditionPrimary(); ac.setName($agg.text);
                                  ac.setLineNumber($agg.getLine()); ac.setCharacter($agg.getCharPositionInLine());}
         LPAREN e = expression {ac.setArgument($e.e); $tp = ac;} RPAREN
-
     ;

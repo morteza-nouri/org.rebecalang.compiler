@@ -26,6 +26,7 @@ import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.MainDeclarat
  *     <extension base="{http://rebecalang.org/compiler/modelcompiler/corerebeca}MainDeclaration">
  *       <sequence>
  *         <element name="mainMailboxDefinition" type="{http://rebecalang.org/compiler/modelcompiler/timedrebeca}MainMailboxDefinition" maxOccurs="unbounded" minOccurs="0"/>
+ *         <element name="mainNetworkDefinition" type="{http://rebecalang.org/compiler/modelcompiler/timedrebeca}MainNetworkDefinition" maxOccurs="unbounded" minOccurs="0"/>
  *       </sequence>
  *     </extension>
  *   </complexContent>
@@ -36,13 +37,15 @@ import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.MainDeclarat
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TimedMainDeclaration", propOrder = {
-    "mainMailboxDefinition"
+    "mainMailboxDefinition",
+    "mainNetworkDefinition"
 })
 public class TimedMainDeclaration
     extends MainDeclaration
 {
 
     protected List<MainMailboxDefinition> mainMailboxDefinition;
+    protected List<MainNetworkDefinition> mainNetworkDefinition;
 
     /**
      * Gets the value of the mainMailboxDefinition property.
@@ -73,6 +76,37 @@ public class TimedMainDeclaration
             mainMailboxDefinition = new ArrayList<>();
         }
         return this.mainMailboxDefinition;
+    }
+
+    /**
+     * Gets the value of the mainNetworkDefinition property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the Jakarta XML Binding object.
+     * This is why there is not a {@code set} method for the mainNetworkDefinition property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getMainNetworkDefinition().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link MainNetworkDefinition }
+     * 
+     * 
+     * @return
+     *     The value of the mainNetworkDefinition property.
+     */
+    public List<MainNetworkDefinition> getMainNetworkDefinition() {
+        if (mainNetworkDefinition == null) {
+            mainNetworkDefinition = new ArrayList<>();
+        }
+        return this.mainNetworkDefinition;
     }
 
 }

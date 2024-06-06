@@ -66,6 +66,16 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link MainNetworkDefinition }
+     * 
+     * @return
+     *     the new instance of {@link MainNetworkDefinition }
+     */
+    public MainNetworkDefinition createMainNetworkDefinition() {
+        return new MainNetworkDefinition();
+    }
+
+    /**
      * Create an instance of {@link TimedMainRebecDefinition }
      * 
      * @return
@@ -86,6 +96,16 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link NetworkDeclaration }
+     * 
+     * @return
+     *     the new instance of {@link NetworkDeclaration }
+     */
+    public NetworkDeclaration createNetworkDeclaration() {
+        return new NetworkDeclaration();
+    }
+
+    /**
      * Create an instance of {@link TimedRebecaParentSuffixPrimary }
      * 
      * @return
@@ -103,6 +123,26 @@ public class ObjectFactory {
      */
     public AggregationConditionPrimary createAggregationConditionPrimary() {
         return new AggregationConditionPrimary();
+    }
+
+    /**
+     * Create an instance of {@link DelayExpression }
+     * 
+     * @return
+     *     the new instance of {@link DelayExpression }
+     */
+    public DelayExpression createDelayExpression() {
+        return new DelayExpression();
+    }
+
+    /**
+     * Create an instance of {@link LossExpression }
+     * 
+     * @return
+     *     the new instance of {@link LossExpression }
+     */
+    public LossExpression createLossExpression() {
+        return new LossExpression();
     }
 
 }

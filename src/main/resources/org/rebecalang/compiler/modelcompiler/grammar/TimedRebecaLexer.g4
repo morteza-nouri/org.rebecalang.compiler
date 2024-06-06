@@ -6,7 +6,7 @@ MAILBOX
     : 'mailbox'
     ;
 
-KNONWSENDERS
+KNOWNSENDERS
     : 'knownsenders'
     ;
 
@@ -20,6 +20,26 @@ MIN
 
 MAX
     : 'max'
+    ;
+
+NETWORK
+    : 'network'
+    ;
+
+KNOWNNODES
+    : 'knownNodes'
+    ;
+
+DELAYS
+    : 'delays'
+    ;
+
+LOSSES
+    : 'losses'
+    ;
+
+CONNECT
+    : '->'
     ;
 
 AFTER

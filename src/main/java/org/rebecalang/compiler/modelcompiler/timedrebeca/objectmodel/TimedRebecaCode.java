@@ -26,6 +26,7 @@ import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.RebecaCode;
  *     <extension base="{http://rebecalang.org/compiler/modelcompiler/corerebeca}RebecaCode">
  *       <sequence>
  *         <element name="mailboxDeclaration" type="{http://rebecalang.org/compiler/modelcompiler/timedrebeca}MailboxDeclaration" maxOccurs="unbounded" minOccurs="0"/>
+ *         <element name="networkDeclaration" type="{http://rebecalang.org/compiler/modelcompiler/timedrebeca}NetworkDeclaration" maxOccurs="unbounded" minOccurs="0"/>
  *       </sequence>
  *     </extension>
  *   </complexContent>
@@ -36,13 +37,15 @@ import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.RebecaCode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TimedRebecaCode", propOrder = {
-    "mailboxDeclaration"
+    "mailboxDeclaration",
+    "networkDeclaration"
 })
 public class TimedRebecaCode
     extends RebecaCode
 {
 
     protected List<MailboxDeclaration> mailboxDeclaration;
+    protected List<NetworkDeclaration> networkDeclaration;
 
     /**
      * Gets the value of the mailboxDeclaration property.
@@ -73,6 +76,37 @@ public class TimedRebecaCode
             mailboxDeclaration = new ArrayList<>();
         }
         return this.mailboxDeclaration;
+    }
+
+    /**
+     * Gets the value of the networkDeclaration property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the Jakarta XML Binding object.
+     * This is why there is not a {@code set} method for the networkDeclaration property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getNetworkDeclaration().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link NetworkDeclaration }
+     * 
+     * 
+     * @return
+     *     The value of the networkDeclaration property.
+     */
+    public List<NetworkDeclaration> getNetworkDeclaration() {
+        if (networkDeclaration == null) {
+            networkDeclaration = new ArrayList<>();
+        }
+        return this.networkDeclaration;
     }
 
 }
