@@ -161,6 +161,7 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		scopeHandler.pushScopeRecord(CoreRebecaLabelUtility.MAIN);
 		semanticCheckForActors(rebecaModel);
 		semanticCheckForMailboxes(rebecaModel);
+		semanticCheckForNetworks(rebecaModel);
 		semanticCheckForActorsBundledMailbox(rebecaModel);
 		scopeHandler.popScopeRecord();
 	}
@@ -209,14 +210,52 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		for(MainMailboxDefinition mmbd : timedMainDeclaration.getMainMailboxDefinition()) {
 			LinkedList<Type> knownSendersBindingsTypes = semanticCheckKnownSendersBindings(mmbd);
 			MailboxDeclaration mailboxDeclaration = mailboxDeclarations.get(mmbd.getType().getTypeName());
-			List<FieldDeclaration> knownSenders = getKnownSenders(mailboxDeclaration);
-			List<Type> expectedSendersTypes = getExpectedSendersTypes(knownSenders);
+			List<FieldDeclaration> knownSenders = mailboxDeclaration.getKnownSenders();
+			List<Type> expectedSendersTypes = getExpectedRebecsTypes(knownSenders);
 			if (!TypesUtilities.areTheSame(knownSendersBindingsTypes, expectedSendersTypes, Type.getCastableComparator())) {
 				CodeCompilationException cce = new CodeCompilationException(
 						createCheckMainBindingsExceptionMessage(knownSenders, knownSendersBindingsTypes,
 								mailboxDeclaration.getName(),
 								"knownsenders"),
 						mmbd.getLineNumber(), mmbd.getCharacter());
+				exceptionContainer.addException(cce);
+			}
+		}
+	}
+
+	private void semanticCheckForNetworks(RebecaModel rebecaModel) {
+		TimedMainDeclaration timedMainDeclaration = (TimedMainDeclaration) rebecaModel.getRebecaCode().getMainDeclaration();
+		for (MainNetworkDefinition mnd : timedMainDeclaration.getMainNetworkDefinition()) {
+			try {
+				scopeHandler.retreiveVariableFromScope(mnd.getName());
+				CodeCompilationException rce = new CodeCompilationException(
+						"Multiple definition for the network " + mnd.getName(), mnd.getLineNumber(), mnd.getCharacter());
+				this.exceptionContainer.addException(rce);
+			} catch (ScopeException se) {
+				try {
+					Type type =typeSystem.getType(mnd.getType());
+					mnd.setType(type);
+					scopeHandler.addVariableToCurrentScope(mnd.getName(), type, CoreRebecaLabelUtility.LOCAL_VARIABLE,
+							mnd.getLineNumber(), mnd.getCharacter());
+				} catch (CodeCompilationException cce) {
+					cce.setColumn(mnd.getCharacter());
+					cce.setLine(mnd.getLineNumber());
+					exceptionContainer.addException(cce);
+				}
+			}
+		}
+		HashMap<String, NetworkDeclaration> networkDeclarations = getAllNetworkDeclarations();
+		for (MainNetworkDefinition mnd : timedMainDeclaration.getMainNetworkDefinition()) {
+			LinkedList<Type> knownNodesBindingsType = semanticCheckKnownNodesBindings(mnd);
+			NetworkDeclaration networkDeclaration = networkDeclarations.get(mnd.getType().getTypeName());
+			List<FieldDeclaration> knownNodes = networkDeclaration.getKnownNodes();
+			List<Type> expectedNodesTypes = getExpectedRebecsTypes(knownNodes);
+			if (!TypesUtilities.areTheSame(knownNodesBindingsType, expectedNodesTypes, Type.getCastableComparator())) {
+				CodeCompilationException cce = new CodeCompilationException(
+						createCheckMainBindingsExceptionMessage(knownNodes, knownNodesBindingsType,
+								networkDeclaration.getName(),
+								"knownnodes"),
+						mnd.getLineNumber(), mnd.getCharacter());
 				exceptionContainer.addException(cce);
 			}
 		}
@@ -359,6 +398,14 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		return mailboxDeclarations;
 	}
 
+	private <T> HashMap<String, NetworkDeclaration> getAllNetworkDeclarations() {
+		HashMap<String, NetworkDeclaration> networkDeclarations = new HashMap<>();
+		for (NetworkDeclaration nd : ((TimedRebecaCode)rebecaModel.getRebecaCode()).getNetworkDeclaration()) {
+			networkDeclarations.put(nd.getName(), nd);
+		}
+		return networkDeclarations;
+	}
+
 	private LinkedList<Type> semanticCheckKnownSendersBindings(MainMailboxDefinition mainMailboxDefinition) {
 		LinkedList<Type> knownSendersBindingsTypes = new LinkedList<>();
 		for (Expression expression : mainMailboxDefinition.getBindings()) {
@@ -367,14 +414,22 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		return knownSendersBindingsTypes;
 	}
 
-	private List<Type> getExpectedSendersTypes(List<FieldDeclaration> knownSenders) {
+	private LinkedList<Type> semanticCheckKnownNodesBindings(MainNetworkDefinition mainNetworkDefinition) {
+		LinkedList<Type> knownNodesBindingsTypes = new LinkedList<>();
+		for (Expression expression : mainNetworkDefinition.getBindings()) {
+			knownNodesBindingsTypes.add(statementSemanticCheckContainer.check(expression).getFirst());
+		}
+		return knownNodesBindingsTypes;
+	}
+	private List<Type> getExpectedRebecsTypes(List<FieldDeclaration> knowns) {
 		List<Type> expectedTypes = new LinkedList<>();
-		for (FieldDeclaration fd : knownSenders) {
+		for (FieldDeclaration fd : knowns) {
 			for (int variableCounter = 0; variableCounter < fd.getVariableDeclarators().size(); variableCounter++) {
 				if (fd.getType() instanceof OrdinaryPrimitiveType) {
 					try {
 						expectedTypes.add(typeSystem.getType(fd.getType()));
 					} catch (CodeCompilationException e) {
+						expectedTypes.add(AbstractTypeSystem.UNKNOWN_TYPE);
 						e.setColumn(fd.getCharacter());
 						e.setLine(fd.getLineNumber());
 						exceptionContainer.addException(e);
@@ -383,10 +438,6 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 			}
 		}
 		return expectedTypes;
-	}
-
-	private List<FieldDeclaration> getKnownSenders(MailboxDeclaration mailboxDeclaration) {
-		return mailboxDeclaration.getKnownSenders();
 	}
 
 	private boolean conflictInPriorityType(PriorityType newPriorityType, Annotation annotation) {

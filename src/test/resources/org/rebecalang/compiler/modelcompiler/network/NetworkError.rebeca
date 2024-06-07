@@ -75,4 +75,6 @@ main {
     BMailbox tmbox(a);
     B b<tmbox>():();
     AMailbox xbox(b);
+    MyNetwork yourNetwork<>();
+    MyNetwork theirNetwork<>(b,a);
 }
