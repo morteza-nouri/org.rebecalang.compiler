@@ -891,6 +891,8 @@ public class TimedRebecaCompleteParser extends Parser {
 		public Token networkName;
 		public ExpressionContext e;
 		public ExpressionListContext el;
+		public TerminalNode LT() { return getToken(TimedRebecaCompleteParser.LT, 0); }
+		public TerminalNode GT() { return getToken(TimedRebecaCompleteParser.GT, 0); }
 		public TerminalNode LPAREN() { return getToken(TimedRebecaCompleteParser.LPAREN, 0); }
 		public TerminalNode RPAREN() { return getToken(TimedRebecaCompleteParser.RPAREN, 0); }
 		public TerminalNode SEMI() { return getToken(TimedRebecaCompleteParser.SEMI, 0); }
@@ -898,8 +900,6 @@ public class TimedRebecaCompleteParser extends Parser {
 			return getRuleContext(TypeContext.class,0);
 		}
 		public TerminalNode IDENTIFIER() { return getToken(TimedRebecaCompleteParser.IDENTIFIER, 0); }
-		public TerminalNode LT() { return getToken(TimedRebecaCompleteParser.LT, 0); }
-		public TerminalNode GT() { return getToken(TimedRebecaCompleteParser.GT, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
@@ -934,21 +934,21 @@ public class TimedRebecaCompleteParser extends Parser {
 			((MainNetworkDefinitionContext)_localctx).networkName = match(IDENTIFIER);
 			_localctx.mnd.setType(((MainNetworkDefinitionContext)_localctx).t.t);_localctx.mnd.setName((((MainNetworkDefinitionContext)_localctx).networkName!=null?((MainNetworkDefinitionContext)_localctx).networkName.getText():null));
 			            _localctx.mnd.setLineNumber(((MainNetworkDefinitionContext)_localctx).networkName.getLine()); _localctx.mnd.setCharacter(((MainNetworkDefinitionContext)_localctx).networkName.getCharPositionInLine());
-			setState(294);
+			setState(289);
+			match(LT);
+			setState(293);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==LT) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MIN) | (1L << MAX) | (1L << INTLITERAL) | (1L << FLOATLITERAL) | (1L << DOUBLELITERAL) | (1L << CHARLITERAL) | (1L << STRINGLITERAL) | (1L << NEW) | (1L << TRUE) | (1L << FALSE) | (1L << NULL) | (1L << LPAREN))) != 0) || ((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (BANG - 66)) | (1L << (TILDA - 66)) | (1L << (QUES - 66)) | (1L << (PLUSPLUS - 66)) | (1L << (SUBSUB - 66)) | (1L << (PLUS - 66)) | (1L << (SUB - 66)) | (1L << (IDENTIFIER - 66)))) != 0)) {
 				{
-				setState(289);
-				match(LT);
 				setState(290);
 				((MainNetworkDefinitionContext)_localctx).e = expression();
 				_localctx.mnd.setMailbox(((MainNetworkDefinitionContext)_localctx).e.e);
-				setState(292);
-				match(GT);
 				}
 			}
 
+			setState(295);
+			match(GT);
 			setState(296);
 			match(LPAREN);
 			setState(300);
@@ -6386,7 +6386,7 @@ public class TimedRebecaCompleteParser extends Parser {
 		"\5\4\u00f9\n\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5"+
 		"\3\5\3\5\7\5\u010b\n\5\f\5\16\5\u010e\13\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6"+
 		"\3\6\3\6\3\6\3\6\5\6\u011b\n\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7"+
-		"\3\7\3\7\5\7\u0129\n\7\3\7\3\7\3\7\3\7\5\7\u012f\n\7\3\7\3\7\3\7\3\b\3"+
+		"\3\7\5\7\u0128\n\7\3\7\3\7\3\7\3\7\3\7\5\7\u012f\n\7\3\7\3\7\3\7\3\b\3"+
 		"\b\3\b\3\b\7\b\u0138\n\b\f\b\16\b\u013b\13\b\3\b\3\b\3\b\3\b\3\b\3\b\3"+
 		"\b\3\b\5\b\u0145\n\b\3\b\3\b\3\b\3\b\5\b\u014b\n\b\3\b\3\b\3\b\3\b\3\b"+
 		"\3\b\5\b\u0153\n\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\n"+
@@ -6526,9 +6526,9 @@ public class TimedRebecaCompleteParser extends Parser {
 		"\7:\2\2\u0117\u0118\5|?\2\u0118\u0119\b\6\1\2\u0119\u011b\3\2\2\2\u011a"+
 		"\u0117\3\2\2\2\u011a\u011b\3\2\2\2\u011b\u011c\3\2\2\2\u011c\u011d\7;"+
 		"\2\2\u011d\u011e\7@\2\2\u011e\13\3\2\2\2\u011f\u0120\b\7\1\2\u0120\u0121"+
-		"\5P)\2\u0121\u0122\7g\2\2\u0122\u0128\b\7\1\2\u0123\u0124\7b\2\2\u0124"+
-		"\u0125\5V,\2\u0125\u0126\b\7\1\2\u0126\u0127\7a\2\2\u0127\u0129\3\2\2"+
-		"\2\u0128\u0123\3\2\2\2\u0128\u0129\3\2\2\2\u0129\u012a\3\2\2\2\u012a\u012e"+
+		"\5P)\2\u0121\u0122\7g\2\2\u0122\u0123\b\7\1\2\u0123\u0127\7b\2\2\u0124"+
+		"\u0125\5V,\2\u0125\u0126\b\7\1\2\u0126\u0128\3\2\2\2\u0127\u0124\3\2\2"+
+		"\2\u0127\u0128\3\2\2\2\u0128\u0129\3\2\2\2\u0129\u012a\7a\2\2\u012a\u012e"+
 		"\7:\2\2\u012b\u012c\5|?\2\u012c\u012d\b\7\1\2\u012d\u012f\3\2\2\2\u012e"+
 		"\u012b\3\2\2\2\u012e\u012f\3\2\2\2\u012f\u0130\3\2\2\2\u0130\u0131\7;"+
 		"\2\2\u0131\u0132\7@\2\2\u0132\r\3\2\2\2\u0133\u0139\b\b\1\2\u0134\u0135"+
@@ -6854,7 +6854,7 @@ public class TimedRebecaCompleteParser extends Parser {
 		"\3\2\2\2\u0536\u0528\3\2\2\2\u0536\u052a\3\2\2\2\u0536\u052c\3\2\2\2\u0536"+
 		"\u052e\3\2\2\2\u0536\u0530\3\2\2\2\u0536\u0532\3\2\2\2\u0536\u0534\3\2"+
 		"\2\2\u0537\177\3\2\2\2z\u0086\u0092\u0094\u00a3\u00a5\u00b7\u00bb\u00c4"+
-		"\u00c8\u00da\u00de\u00e7\u00eb\u00f4\u00f8\u010a\u010c\u011a\u0128\u012e"+
+		"\u00c8\u00da\u00de\u00e7\u00eb\u00f4\u00f8\u010a\u010c\u011a\u0127\u012e"+
 		"\u0139\u0144\u014a\u0152\u016f\u017b\u0187\u0191\u019a\u01a2\u01a4\u01ad"+
 		"\u01b2\u01ba\u01c0\u01c7\u01dc\u01e8\u01f2\u01fa\u0205\u0215\u021f\u0227"+
 		"\u0233\u0236\u0240\u024e\u0251\u025a\u0266\u0272\u0277\u027f\u0289\u028c"+

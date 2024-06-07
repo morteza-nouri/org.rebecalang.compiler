@@ -114,7 +114,7 @@ mainNetworkDefinition returns [MainNetworkDefinition mnd]
         {$mnd = new MainNetworkDefinition();}
         t = type networkName = IDENTIFIER {$mnd.setType($t.t);$mnd.setName($networkName.text);
             $mnd.setLineNumber($networkName.getLine()); $mnd.setCharacter($networkName.getCharPositionInLine());}
-        (LT e = expression {$mnd.setMailbox($e.e);} GT)?
+        LT (e = expression {$mnd.setMailbox($e.e);})? GT
         LPAREN (el = expressionList {$mnd.getBindings().addAll($el.el);})? RPAREN
         SEMI
     ;
