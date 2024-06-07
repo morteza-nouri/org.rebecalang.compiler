@@ -4,6 +4,7 @@ import org.rebecalang.compiler.modelcompiler.abstractrebeca.AbstractTypeSystem;
 import org.rebecalang.compiler.modelcompiler.abstractrebeca.TypeSystemInitializer;
 import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.RebecaModel;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel.MailboxDeclaration;
+import org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel.NetworkDeclaration;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel.TimedRebecaCode;
 import org.rebecalang.compiler.utils.CodeCompilationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ public class TimedRebecaTypeSystemInitializer extends TypeSystemInitializer {
     protected void fillTypeSystem(RebecaModel rebecaModel) {
         super.fillTypeSystem(rebecaModel);
         addMailboxDeclarationsToTypeSystem((TimedRebecaCode) rebecaModel.getRebecaCode());
+        addNetworkDeclarationsToTypeSystem((TimedRebecaCode) rebecaModel.getRebecaCode());
     }
 
     private void addMailboxDeclarationsToTypeSystem(TimedRebecaCode rebecaCode) {
@@ -35,4 +37,18 @@ public class TimedRebecaTypeSystemInitializer extends TypeSystemInitializer {
         }
     }
 
+    private void addNetworkDeclarationsToTypeSystem(TimedRebecaCode rebecaCode) {
+        for (NetworkDeclaration networkDeclaration : rebecaCode.getNetworkDeclaration()) {
+            if (typeSystem.hasType(networkDeclaration.getName())) {
+                CodeCompilationException rce = new CodeCompilationException(
+                        "Multiple Definition of " + networkDeclaration.getName(),
+                        networkDeclaration.getLineNumber(),
+                        networkDeclaration.getCharacter()
+                );
+                exceptionContainer.addException(rce);
+            } else {
+                ((TimedRebecaTypeSystem) typeSystem).addNetworkClassType(networkDeclaration);
+            }
+        }
+    }
 }

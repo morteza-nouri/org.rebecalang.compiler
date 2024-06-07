@@ -8,6 +8,8 @@ public class TimedRebecaLabelUtility {
 	public static final Label MAILBOX;
 	public static final Label KNOWNSENDER_VARIABLE;
 	public static final Label AGGREGATION_ORDERSPEC;
+	public static final Label NETWORK;
+	public static final Label KNOWNNODE_VARIABLE;
 
 
 	static {
@@ -21,5 +23,9 @@ public class TimedRebecaLabelUtility {
 		KNOWNSENDER_VARIABLE.setName("known-sender");
 		AGGREGATION_ORDERSPEC = new Label();
 		AGGREGATION_ORDERSPEC.setName("aggregation-order-spec");
+		NETWORK = new Label();
+		NETWORK.setName("network");
+		KNOWNNODE_VARIABLE = new Label();
+		KNOWNNODE_VARIABLE.setName("known-node");
 	}
 }

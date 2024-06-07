@@ -19,6 +19,8 @@ import org.rebecalang.compiler.modelcompiler.timedrebeca.compiler.TimedRebecaCom
 import org.rebecalang.compiler.modelcompiler.timedrebeca.compiler.TimedRebecaCompleteParser;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel.*;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.statementsemanticchecker.expression.AggregationConditionPrimarySemanticCheck;
+import org.rebecalang.compiler.modelcompiler.timedrebeca.statementsemanticchecker.expression.DelayExpressionSemanticCheck;
+import org.rebecalang.compiler.modelcompiler.timedrebeca.statementsemanticchecker.expression.LossExpressionSemanticCheck;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.statementsemanticchecker.expression.TimedPrimaryTermSemanticCheck;
 import org.rebecalang.compiler.utils.CodeCompilationException;
 import org.rebecalang.compiler.utils.Pair;
@@ -68,6 +70,10 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 				appContext.getBean(AggregationConditionPrimarySemanticCheck.class,
 				typeSystem,
 				expressionSemanticCheckContainer));
+		expressionSemanticCheckContainer.registerSemanticsChecker(DelayExpression.class,
+				appContext.getBean(DelayExpressionSemanticCheck.class, expressionSemanticCheckContainer));
+		expressionSemanticCheckContainer.registerSemanticsChecker(LossExpression.class,
+				appContext.getBean(LossExpressionSemanticCheck.class, expressionSemanticCheckContainer));
 	}
 
 	@Override
@@ -148,6 +154,7 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 	protected void semanticCheckRebecaDeclarations() {
 		super.semanticCheckRebecaDeclarations();
 		semanticCheckMailboxDeclarations();
+		semanticCheckNetworkDeclarations();
 	}
 
 	protected void semanticCheckMainBindings(RebecaModel rebecaModel) {
@@ -246,6 +253,16 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		}
 	}
 
+	private void semanticCheckNetworkDeclarations() {
+		for (NetworkDeclaration networkDeclaration : ((TimedRebecaCode)rebecaModel.getRebecaCode()).getNetworkDeclaration()) {
+			scopeHandler.pushScopeRecord(TimedRebecaLabelUtility.NETWORK);
+			addKnownNodesOfNetworkToScope(networkDeclaration);
+			semanticCheckForDelaysOfNetworkDeclaration(networkDeclaration);
+			semanticCheckForLossesOfNetworkDeclarations(networkDeclaration);
+			scopeHandler.popScopeRecord();
+		}
+	}
+
 	private void addKnownSendersOfMailboxToScope(MailboxDeclaration mailboxDeclaration) {
 		try {
 			scopeHandler.addVariableToCurrentScope("sender", CoreRebecaTypeSystem.REACTIVE_CLASS_TYPE,
@@ -268,6 +285,23 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 			}
 		}
 	}
+
+	private void addKnownNodesOfNetworkToScope(NetworkDeclaration networkDeclaration) {
+		for (FieldDeclaration fd :networkDeclaration.getKnownNodes()) {
+			statementSemanticCheckContainer.check(fd);
+			for (VariableDeclarator vd : fd.getVariableDeclarators()) {
+				scopeHandler.updateVaribaleInCurrentScope(vd.getVariableName(), fd.getType(),
+						TimedRebecaLabelUtility.KNOWNNODE_VARIABLE, vd.getLineNumber(), vd.getCharacter());
+				if (vd.getVariableInitializer() != null) {
+					CodeCompilationException rce = new CodeCompilationException(
+							"Known nodes are only initialized during instantiation", vd.getLineNumber(),
+							vd.getCharacter());
+					exceptionContainer.addException(rce);
+				}
+			}
+		}
+	}
+
 	private void semanticCheckForOrdersOfMailboxDeclaration(MailboxDeclaration mailboxDeclaration) {
 		//TODO: Should be implemented!
 		addAllMessageServersNamesToScope();
@@ -280,6 +314,18 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 //						expression.getCharacter());
 //				exceptionContainer.addException(rce);
 //			}
+		}
+	}
+
+	private void semanticCheckForDelaysOfNetworkDeclaration(NetworkDeclaration networkDeclaration) {
+		for (DelayExpression expression : networkDeclaration.getDelays()) {
+			expressionSemanticCheckContainer.check(expression);
+		}
+	}
+
+	private void semanticCheckForLossesOfNetworkDeclarations(NetworkDeclaration networkDeclaration) {
+		for (LossExpression expression : networkDeclaration.getLosses()) {
+			expressionSemanticCheckContainer.check(expression);
 		}
 	}
 

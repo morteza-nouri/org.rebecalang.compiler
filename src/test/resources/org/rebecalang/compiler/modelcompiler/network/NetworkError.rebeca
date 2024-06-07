@@ -58,7 +58,11 @@ network MyNetwork {
         B beta;
     }
     delays {
-        alpha -> beta: 5 + 3
+        alpha -> beta: 5 + 3,
+        alpha -> beta: false,
+        alpha -> beta: -3,
+        aplpha -> beta: 1==2,
+        x -> y: 1
     }
     losses {
         alpha -> beta
