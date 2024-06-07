@@ -48,8 +48,10 @@ public class MailboxTest {
         expectedExceptionContainer.setCorrespondingResource(model);
         expectedExceptionContainer.addException(new ScopeException("\"bb\" undeclared", 8, 18));
         expectedExceptionContainer.addException(new ScopeException("\"foo\" undeclared", 9, 29));
-        expectedExceptionContainer.addException(new CodeCompilationException("Multiple Definition of BMailbox", 13, 8));
+        expectedExceptionContainer.addException(new CodeCompilationException("Multiple declaration of BMailbox", 13, 8));
         expectedExceptionContainer.addException(new CodeCompilationException("No Mailboxes were instantiated with name 'BMailbox'", 61, 5));
+        expectedExceptionContainer.addException(new CodeCompilationException("The BMailbox knownsenders type binding of (A, A) is not applicable for the arguments ()", 62, 10));
+        expectedExceptionContainer.addException(new CodeCompilationException("Multiple definition for the mailbox bmailbox", 63, 10));
         Assertions.assertEquals(exceptionContainer, expectedExceptionContainer);
     }
 

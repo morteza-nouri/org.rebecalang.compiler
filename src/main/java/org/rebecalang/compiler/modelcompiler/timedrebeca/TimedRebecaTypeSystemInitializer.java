@@ -26,7 +26,7 @@ public class TimedRebecaTypeSystemInitializer extends TypeSystemInitializer {
         for (MailboxDeclaration mailboxDeclaration : rebecaCode.getMailboxDeclaration()) {
             if (typeSystem.hasType(mailboxDeclaration.getName())) {
                 CodeCompilationException rce = new CodeCompilationException(
-                        "Multiple Definition of " + mailboxDeclaration.getName(),
+                        "Multiple declaration of " + mailboxDeclaration.getName(),
                         mailboxDeclaration.getLineNumber(),
                         mailboxDeclaration.getCharacter()
                 );
@@ -41,7 +41,7 @@ public class TimedRebecaTypeSystemInitializer extends TypeSystemInitializer {
         for (NetworkDeclaration networkDeclaration : rebecaCode.getNetworkDeclaration()) {
             if (typeSystem.hasType(networkDeclaration.getName())) {
                 CodeCompilationException rce = new CodeCompilationException(
-                        "Multiple Definition of " + networkDeclaration.getName(),
+                        "Multiple declaration of " + networkDeclaration.getName(),
                         networkDeclaration.getLineNumber(),
                         networkDeclaration.getCharacter()
                 );
