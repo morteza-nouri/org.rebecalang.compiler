@@ -163,6 +163,7 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		semanticCheckForMailboxes(rebecaModel);
 		semanticCheckForNetworks(rebecaModel);
 		semanticCheckForActorsBundledMailbox(rebecaModel);
+		semanticCheckForNetworksBundledMailbox(rebecaModel);
 		scopeHandler.popScopeRecord();
 	}
 
@@ -171,17 +172,17 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 			TermPrimary mbExpression = (TermPrimary) ((TimedMainRebecDefinition)mrd).getMailbox();
 			if (mbExpression == null)
 				continue;
-			try {
-				scopeHandler.retreiveVariableFromScope(mbExpression.getName());
-				Type mbType = statementSemanticCheckContainer.check(mbExpression).getFirst();
-				((TimedMainRebecDefinition) mrd).getMailbox().setType(mbType);
-			} catch (ScopeException e) {
-				CodeCompilationException cce = new CodeCompilationException(
-						"No Mailboxes were instantiated with name '" + mbExpression.getName() + "'",
-						mbExpression.getLineNumber(),
-						mbExpression.getCharacter());
-				exceptionContainer.addException(cce);
-			}
+			((TimedMainRebecDefinition) mrd).getMailbox().setType(getTheMailboxInstanceTypeIfExists(mbExpression));
+		}
+	}
+
+	private void semanticCheckForNetworksBundledMailbox(RebecaModel rebecaModel) {
+		TimedMainDeclaration timedMainDeclaration = (TimedMainDeclaration) rebecaModel.getRebecaCode().getMainDeclaration();
+		for (MainNetworkDefinition mnd : timedMainDeclaration.getMainNetworkDefinition()) {
+			TermPrimary mbExpression = (TermPrimary) mnd.getMailbox();
+			if (mbExpression == null)
+				continue;
+			mnd.getMailbox().setType(getTheMailboxInstanceTypeIfExists(mbExpression));
 		}
 	}
 
@@ -440,6 +441,19 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		return expectedTypes;
 	}
 
+	private Type getTheMailboxInstanceTypeIfExists(TermPrimary mbExpression) {
+		try {
+			scopeHandler.retreiveVariableFromScope(mbExpression.getName());
+			return statementSemanticCheckContainer.check(mbExpression).getFirst();
+		} catch (ScopeException e) {
+			CodeCompilationException cce = new CodeCompilationException(
+					"No Mailboxes were instantiated with name '" + mbExpression.getName() + "'",
+					mbExpression.getLineNumber(),
+					mbExpression.getCharacter());
+			exceptionContainer.addException(cce);
+		}
+		return null;
+	}
 	private boolean conflictInPriorityType(PriorityType newPriorityType, Annotation annotation) {
 		if((newPriorityType == PriorityType.local && modelPriorityType == PriorityType.global) ||
 				(newPriorityType == PriorityType.global && modelPriorityType == PriorityType.local)) {

@@ -51,6 +51,7 @@ public class NetworkTest {
         expectedExceptionContainer.addException(new CodeCompilationException("Only convertible int values are permitted here", 64, 24));
         expectedExceptionContainer.addException(new CodeCompilationException("The MyNetwork knownnodes type binding of (A, B) is not applicable for the arguments ()", 78, 14));
         expectedExceptionContainer.addException(new CodeCompilationException("The MyNetwork knownnodes type binding of (A, B) is not applicable for the arguments (B, A)", 79, 14));
+        expectedExceptionContainer.addException(new CodeCompilationException("No Mailboxes were instantiated with name 'noBox'", 79, 27));
 
         Assertions.assertEquals(exceptionContainer, expectedExceptionContainer);
     }
