@@ -163,6 +163,11 @@ public class CoreRebecaCompleteCompilerFacade extends AbstractCompilerFacade {
 	protected void addVariablesOfRebecaExtensionToScope() {		
 	}
 
+	@Override
+	protected void addExtraMetaDeclarationsToRebecaExtension() {
+
+	}
+
 	protected void initializeStatementSemanticCheckContainer() {
 		statementSemanticCheckContainer.clear();
 		statementSemanticCheckContainer.setExpressionSemanticCheckContainer(expressionSemanticCheckContainer);

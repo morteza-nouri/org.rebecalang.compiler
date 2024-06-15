@@ -17,6 +17,7 @@ import org.rebecalang.compiler.modelcompiler.corerebeca.CoreRebecaTypeSystem;
 import org.rebecalang.compiler.modelcompiler.corerebeca.objectmodel.*;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.compiler.TimedRebecaCompleteLexer;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.compiler.TimedRebecaCompleteParser;
+import org.rebecalang.compiler.modelcompiler.timedrebeca.network.NetworkUtilityDeclarationsGenerator;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.objectmodel.*;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.statementsemanticchecker.expression.AggregationConditionPrimarySemanticCheck;
 import org.rebecalang.compiler.modelcompiler.timedrebeca.statementsemanticchecker.expression.DelayExpressionSemanticCheck;
@@ -142,6 +143,15 @@ public class TimedRebecaCompleteCompilerFacade extends CoreRebecaCompleteCompile
 		} catch (ScopeException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	protected void addExtraMetaDeclarationsToRebecaExtension() {
+		TimedRebecaCode rebecaCode = (TimedRebecaCode) rebecaModel.getRebecaCode();
+		if (rebecaCode.getNetworkDeclaration().isEmpty())
+			return;
+		NetworkUtilityDeclarationsGenerator utilityDeclarationsGenerator = new NetworkUtilityDeclarationsGenerator();
+		utilityDeclarationsGenerator.modifyRebecaModelToSupportNetwork(rebecaModel);
 	}
 
 	@Override
